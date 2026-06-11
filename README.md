@@ -1,31 +1,74 @@
 # AgentDemo - Ollama + LangChain + LangGraph + Streamlit + RAG
 
-Bu proje, local LLM kullanarak çalışan basit ama geliştirilebilir bir yapay zeka agent uygulamasıdır. Projede Ollama üzerinden local model çalıştırılır, Streamlit ile arayüz sağlanır, LangGraph ile kısa süreli hafıza eklenir ve PDF dosyaları üzerinden RAG sistemi kullanılır.
+Bu proje, local LLM kullanarak çalışan basit ama geliştirilebilir bir yapay zeka agent uygulamasıdır. Projede Ollama üzerinden local model çalıştırılır, Streamlit ile arayüz sağlanır, LangGraph ile kalıcı hafıza eklenir ve PDF dosyaları üzerinden RAG sistemi kullanılır.
 
-## Demo
+---
 
-### PDF RAG Sistemi
+# Durum
 
-![RAG Demo](screenshots/rag-demo.png)
+Version 1.0 Tamamlandı
 
-## Özellikler
+Bu proje;
+
+* LangChain
+* LangGraph
+* SQLite Memory
+* Ollama
+* Streamlit
+* RAG
+* ChromaDB
+
+teknolojilerini öğrenmek amacıyla geliştirilmiş ilk çalışan sürümdür.
+
+---
+
+# Demo
+
+## PDF RAG Sistemi
+
+![RAG Demo](screenshots/rag-demo.jpg)
+
+Bu demo ekranında:
+
+* PDF yükleme
+* RAG ile belge sorgulama
+* Kaynak sayfa gösterimi
+* Kalıcı hafıza sistemi
+* Thread bazlı sohbet yönetimi
+
+özellikleri gösterilmektedir.
+
+---
+
+# Özellikler
 
 * Local LLM desteği
 * Ollama entegrasyonu
 * Streamlit chat arayüzü
 * LangChain agent yapısı
-* LangGraph short-term memory
+* LangGraph entegrasyonu
+* SQLite tabanlı kalıcı hafıza
+* Thread bazlı sohbet sistemi
 * Router tabanlı yönlendirme
 * PDF tabanlı RAG sistemi
 * ChromaDB vector database
 * Ollama embedding desteği
-* Basit tool sistemi:
+* Kaynak gösterimli cevaplar
+* Python logging sistemi
+* Sidebar log görüntüleme paneli
+* Hata yönetimi (try/except)
+* Cevap süresi takibi
+* Basit tool sistemi
 
-  * Hava durumu
-  * Çıkarma işlemi
-  * Demo web search
+### Mevcut Toollar
 
-## Kullanılan Teknolojiler
+* Hava durumu sorgulama
+* Çıkarma işlemi
+* Demo web search
+
+---
+
+# Kullanılan Teknolojiler
 
 * Python
 * Streamlit
@@ -33,80 +76,189 @@ Bu proje, local LLM kullanarak çalışan basit ama geliştirilebilir bir yapay 
 * LangGraph
 * Ollama
 * ChromaDB
+* SQLite
 * PyPDFLoader
 * RecursiveCharacterTextSplitter
 * OllamaEmbeddings
-* Mistral local model
-* nomic-embed-text embedding modeli
+* Logging
+* Mistral
+* nomic-embed-text
 
-## Proje Mimarisi
+---
 
-Proje temel olarak şu akışla çalışır:
+# Proje Mimarisi
 
 ```text
-Kullanıcı mesajı
-      ↓
-Streamlit Chat Arayüzü
-      ↓
-Router Kontrolü
-      ↓
- ┌───────────────┬───────────────┬───────────────┐
- │ Hava durumu   │ Basit işlem   │ PDF/RAG       │
- └───────────────┴───────────────┴───────────────┘
-      ↓
-Gerekirse Agent / LLM
-      ↓
-Cevap
+Kullanıcı Mesajı
+        │
+        ▼
+Streamlit Arayüzü
+        │
+        ▼
+Router
+        │
+ ┌──────┼──────────┐
+ │      │          │
+ ▼      ▼          ▼
+RAG   Toollar   Agent
+ │                 │
+ ▼                 ▼
+ChromaDB      LangGraph
+ │                 │
+ ▼                 ▼
+Ollama       SQLite Memory
+        │
+        ▼
+      Cevap
 ```
 
-## RAG Mimarisi
+---
 
-PDF dosyası yüklendiğinde sistem şu işlemleri yapar:
+# RAG Mimarisi
+
+PDF dosyası yüklendiğinde sistem şu işlemleri gerçekleştirir:
 
 ```text
 PDF yüklenir
-    ↓
-PyPDFLoader ile okunur
-    ↓
-Metin parçalara bölünür
-    ↓
-OllamaEmbeddings ile vektöre çevrilir
-    ↓
-ChromaDB içine kaydedilir
-    ↓
-Kullanıcı soru sorar
-    ↓
-En alakalı belge parçaları bulunur
-    ↓
-LLM bu parçalara göre cevap üretir
+      │
+      ▼
+PyPDFLoader
+      │
+      ▼
+Metin Chunk'lara Ayrılır
+      │
+      ▼
+OllamaEmbeddings
+      │
+      ▼
+ChromaDB
+      │
+      ▼
+Similarity Search
+      │
+      ▼
+LLM'e Context Verilir
+      │
+      ▼
+Kaynak Gösterimli Cevap Üretilir
 ```
 
-## Kurulum
+---
 
-Önce gerekli paketleri kur:
+# Persistent Memory
+
+Projede LangGraph SQLite Checkpointer kullanılmaktadır.
+
+```python
+conn = sqlite3.connect(
+    "memory.sqlite",
+    check_same_thread=False
+)
+
+checkpointer = SqliteSaver(conn)
+```
+
+Bu sayede:
+
+* Uygulama kapatılsa bile hafıza kaybolmaz.
+* Aynı thread tekrar açıldığında konuşma geçmişi korunur.
+* Her thread bağımsız hafızaya sahiptir.
+
+---
+
+# Thread Sistemi
+
+Her sohbet farklı bir Thread ID kullanabilir.
+
+Örnek:
+
+```text
+zeynep_1
+test_1
+pdf_1
+```
+
+Her thread:
+
+* Kendi hafızasına sahiptir.
+* Kendi konuşma geçmişini saklar.
+* Diğer threadlerden bağımsız çalışır.
+
+---
+
+# Logging Sistemi
+
+Projede Python Logging kullanılmaktadır.
+
+Log dosyası:
+
+```text
+agent.log
+```
+
+Loglanan olaylar:
+
+* PDF yükleme
+* Vectorstore oluşturma
+* Chunk üretimi
+* RAG sorguları
+* Agent cevapları
+* Hatalar
+* Cevap süreleri
+* Router kararları
+
+Örnek log:
+
+```text
+2026-06-11 22:01:13 | INFO | PDF yüklendi
+2026-06-11 22:01:15 | INFO | Chunk sayısı: 12
+2026-06-11 22:01:21 | INFO | RAG için 3 kaynak bulundu
+2026-06-11 22:01:28 | INFO | Cevap süresi: 4.12 saniye
+```
+
+---
+
+# Kurulum
+
+Gerekli paketleri yükleyin:
 
 ```bash
-pip install streamlit langchain langgraph langchain-ollama langchain-community langchain-text-splitters langchain-chroma pypdf
+pip install streamlit
+pip install langchain
+pip install langgraph
+pip install langgraph-checkpoint-sqlite
+pip install langchain-ollama
+pip install langchain-community
+pip install langchain-text-splitters
+pip install langchain-chroma
+pip install chromadb
+pip install pypdf
 ```
 
-Ollama tarafında kullanılacak modelleri indir:
+---
+
+# Ollama Modelleri
 
 ```bash
 ollama pull mistral
 ollama pull nomic-embed-text
 ```
 
-## Çalıştırma
+---
 
-Projeyi çalıştırmak için:
+# Çalıştırma
 
 ```bash
-streamlit run app.py
+streamlit run main.py
 ```
 
-## Örnek Kullanım
+---
 
-Normal sohbet:
+# Örnek Kullanım
+
+## Hafıza Testi
+
+Kullanıcı:
 
 ```text
 Benim adım Zeynep.
@@ -118,15 +270,19 @@ Sonra:
 Benim adım ne?
 ```
 
-Agent, short-term memory sayesinde önceki konuşmayı hatırlayabilir.
+Sistem konuşma geçmişini kullanarak cevap verebilir.
 
-PDF/RAG örneği:
+---
+
+## PDF RAG Testi
+
+PDF yükle:
 
 ```text
-PDF yükle
+sample_ai_document.pdf
 ```
 
-Sonra:
+Soru sor:
 
 ```text
 Bu belgede ne anlatılıyor?
@@ -135,107 +291,115 @@ Bu belgede ne anlatılıyor?
 veya:
 
 ```text
-Bu PDF'e göre ana konu nedir?
+Bu PDF içindeki başlıkları listele.
 ```
 
-Router, bu soruyu RAG sistemine yönlendirir.
+Sistem ilgili sayfaları bulur ve kaynak göstererek cevap verir.
 
-## Router Mantığı
+---
 
-Projede modelin her şeye kendisinin karar vermesi yerine basit bir router kullanılmıştır. Bunun sebebi local modellerde tool calling davranışının her zaman stabil olmamasıdır.
+# Router Mantığı
 
-Router örnek olarak şunları kontrol eder:
+Local modellerin tool calling davranışları her zaman stabil olmadığı için basit bir Router kullanılmaktadır.
+
+Router aşağıdaki yönlendirmeleri yapar:
 
 ```text
-hava → hava durumu cevabı
-eksi / çıkar → matematik yönlendirmesi
-pdf / belge / doküman / dosya → RAG sistemi
-diğer mesajlar → normal agent cevabı
+hava → Hava durumu
+
+eksi / çıkar → Matematik
+
+pdf / belge / doküman → RAG
+
+diğer tüm sorular → Agent
 ```
 
-Bu yapı sayesinde sistem daha hızlı ve daha kontrollü çalışır.
+Bu yaklaşım:
 
-## Short-Term Memory
+* Daha hızlıdır
+* Daha stabildir
+* Daha öngörülebilirdir
 
-Projede LangGraph `InMemorySaver` kullanılmıştır.
+---
 
-```python
-checkpointer=InMemorySaver()
-```
-
-Bu sayede aynı `thread_id` içinde konuşma geçmişi tutulur.
-
-Örnek:
-
-```python
-config = {
-    "configurable": {
-        "thread_id": "zeynep_1"
-    }
-}
-```
-
-Not: Bu hafıza kalıcı değildir. Uygulama kapatıldığında hafıza sıfırlanır. Kalıcı hafıza için ileride SQLite, Postgres, ChromaDB veya FAISS tabanlı long-term memory eklenebilir.
-
-## Mevcut Sınırlamalar
+# Mevcut Sınırlamalar
 
 * Local model kullanıldığı için cevap süresi uzun olabilir.
-* Mistral bazı Türkçe cevaplarda doğal olmayan çıktılar verebilir.
+* Mistral bazı Türkçe cevaplarda hatalar yapabilir.
+* Web search gerçek internet araması değildir.
 * Tool calling tamamen modele bırakılmamıştır.
-* RAG sadece metin tabanlı PDF'lerde iyi çalışır.
-* Görsel/taranmış PDF'ler için OCR desteği yoktur.
-* Memory şu an sadece short-term memory olarak çalışır.
+* OCR desteği bulunmamaktadır.
+* Görsel PDF'lerde başarı düşebilir.
+* Tek PDF odaklı çalışmaktadır.
 
-## Geliştirilecek Özellikler
+---
 
-* Long-term memory
-* SQLite veya Postgres checkpointer
-* Daha gelişmiş RAG sistemi
-* PDF kaynak sayfa gösterme
-* Çoklu PDF desteği
-* Daha iyi router yapısı
-* Gerçek web search entegrasyonu
-* FAISS desteği
-* Kullanıcı bazlı thread sistemi
-* Chat geçmişini dışa aktarma
-* Daha hızlı model seçeneği
+# Gelecek Geliştirmeler
 
-## Proje Dosya Yapısı Önerisi
+* Long-Term Memory
+* Multi PDF RAG
+* Agentic RAG
+* Gerçek Web Search
+* OCR Desteği
+* Streaming Cevaplar
+* FAISS Desteği
+* Chat Export (TXT / JSON)
+* Docker Desteği
+* Kullanıcı Yönetimi
+* Authentication Sistemi
+* API Endpointleri
 
-Şu an proje tek dosyada geliştirilebilir. Ancak proje büyüdüğünde aşağıdaki yapıya geçilebilir:
+---
+
+# Proje Yapısı
 
 ```text
 agent-demo/
 │
-├── app.py
-├── agent.py
-├── rag.py
-├── router.py
-├── tools.py
-├── requirements.txt
+├── main.py
 ├── README.md
+├── requirements.txt
+├── memory.sqlite
+├── agent.log
 │
 ├── uploads/
-│   └── uploaded.pdf
 │
-└── chroma_db/
+├── chroma_db/
+│
+└── screenshots/
+    └── rag-demo.png
 ```
 
-## requirements.txt Örneği
+---
+
+# requirements.txt
 
 ```txt
 streamlit
 langchain
 langgraph
+langgraph-checkpoint-sqlite
 langchain-ollama
 langchain-community
 langchain-text-splitters
 langchain-chroma
-pypdf
 chromadb
+pypdf
 ```
 
-## Amaç
+---
 
-Bu proje, local LLM kullanarak çalışan bir agent sisteminin temel yapılarını öğrenmek için geliştirilmiştir. Amaç; LangChain, LangGraph, Ollama, memory, router ve RAG kavramlarını tek bir pratik uygulamada birleştirmektir.
+# Amaç
+
+Bu proje;
+
+* LangChain
+* LangGraph
+* Ollama
+* SQLite Memory
+* ChromaDB
+* RAG
+
+konularını öğrenmek ve gerçek bir yapay zeka uygulaması geliştirme sürecini deneyimlemek amacıyla geliştirilmiştir.
+
 
