@@ -6,7 +6,7 @@ Bu proje, local LLM kullanarak çalışan basit ama geliştirilebilir bir yapay 
 
 ### PDF RAG Sistemi
 
-![RAG Demo](screenshots/rag-demo.png)
+![RAG Demo](screenshots/rag-demo.jpg)
 
 ## Özellikler
 
