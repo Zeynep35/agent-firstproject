@@ -4,13 +4,7 @@ Bu proje, local LLM kullanarak çalışan basit ama geliştirilebilir bir yapay 
 
 ---
 
-# Durum
-
-<<<<<<< HEAD
-Version 1.0 Tamamlandı
-=======
-<img src="screenshots/rag-demo.jpg" width="800">
->>>>>>> 88d0e525e38d72de5b371d45a377abfb9dec5af8
+## Durum
 
 Bu proje;
 
@@ -26,11 +20,11 @@ teknolojilerini öğrenmek amacıyla geliştirilmiş ilk çalışan sürümdür.
 
 ---
 
-# Demo
+## Demo
 
-## PDF RAG Sistemi
+### PDF RAG Sistemi
 
-![RAG Demo](screenshots/rag-demo.jpg)
+<img src="screenshots/rag-demo.jpg" width="800">
 
 Bu demo ekranında:
 
