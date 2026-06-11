@@ -8,3 +8,72 @@
 2026-06-11 22:01:29,475 | INFO | PDF yüklendi: EnglishCV.pdf
 2026-06-11 22:01:29,477 | INFO | PDF vektör veritabanına işlendi: EnglishCV.pdf
 2026-06-11 22:01:55,351 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-11 23:41:55,451 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:41:55,456 | INFO | Vectorstore oluşturuluyor: uploads\proje_deneme_pdf.pdf
+2026-06-11 23:41:55,635 | INFO | PDF sayfa sayısı: 2
+2026-06-11 23:41:55,635 | INFO | Chunk sayısı: 3
+2026-06-11 23:41:58,282 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-11 23:41:58,305 | INFO | Vectorstore başarıyla oluşturuldu.
+2026-06-11 23:41:58,306 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:42:19,464 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:42:19,466 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:42:19,467 | INFO | Kullanıcı mesajı: proje_deneme_pdf içerisinde hangi konudan bahsediliyor 
+2026-06-11 23:42:19,468 | INFO | Thread ID: zeynep_1
+2026-06-11 23:42:19,469 | INFO | Router: RAG seçildi.
+2026-06-11 23:42:19,469 | INFO | RAG sorusu alındı: proje_deneme_pdf içerisinde hangi konudan bahsediliyor 
+2026-06-11 23:42:19,772 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-11 23:42:19,801 | INFO | RAG için 3 kaynak bulundu.
+2026-06-11 23:42:52,641 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-11 23:43:02,224 | INFO | Asistan cevabı:  Cevap:
+Proje_deneme_pdf içerisinde yapay zekâ (artificial intelligence) konusunda bahsediliyor.
+
+Kaynaklar:
+- Kaynak 1, Sayfa 1
+- Kaynak 2, Sayfa 1
+2026-06-11 23:43:02,224 | INFO | Cevap süresi: 42.76 saniye
+2026-06-11 23:43:28,912 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:43:28,915 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:48:00,143 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:48:00,145 | INFO | Vectorstore oluşturuluyor: uploads\proje_deneme_pdf.pdf
+2026-06-11 23:48:00,320 | INFO | PDF sayfa sayısı: 2
+2026-06-11 23:48:00,320 | INFO | Chunk sayısı: 3
+2026-06-11 23:48:03,323 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-11 23:48:03,348 | INFO | Vectorstore başarıyla oluşturuldu.
+2026-06-11 23:48:03,349 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:49:01,944 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:49:01,947 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:49:01,949 | INFO | Kullanıcı mesajı: sana göndermiş olduğum pdf içindeki konu başlıklarını benimle paylaşır mısın
+2026-06-11 23:49:01,949 | INFO | Thread ID: zeynep_1
+2026-06-11 23:49:01,951 | INFO | Router: RAG seçildi.
+2026-06-11 23:49:01,951 | INFO | RAG sorusu alındı: sana göndermiş olduğum pdf içindeki konu başlıklarını benimle paylaşır mısın
+2026-06-11 23:49:02,211 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-11 23:49:02,216 | INFO | RAG için 3 kaynak bulundu.
+2026-06-11 23:49:54,501 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-11 23:50:17,307 | INFO | Asistan cevabı:  Cevap: Yapay Zekânın Kullanım Alanları; Sağlık (Hastalık teşhisi ve tıbbi görüntü analizi), Eğitim (Kişiselleştirilmiş öğrenme sistemleri), Finans (Dolandırıcılık tespiti ve risk analizi), Yazılım Geliştirme (Kod üretimi ve hata ayıklama).
+
+Kaynaklar:
+- Kaynak 1, Sayfa 2
+- Kaynak 2, Sayfa 2
+2026-06-11 23:50:17,307 | INFO | Cevap süresi: 75.36 saniye
+2026-06-11 23:50:29,420 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:50:29,423 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:53:27,902 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:53:27,904 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:53:45,033 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:53:45,035 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:54:16,001 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-11 23:54:16,004 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-11 23:54:16,007 | INFO | Kullanıcı mesajı: sana gönderdiğim pdf içindeki alt başlıkları bana söyler misin
+2026-06-11 23:54:16,007 | INFO | Thread ID: zeynep_1
+2026-06-11 23:54:16,008 | INFO | Router: RAG seçildi.
+2026-06-11 23:54:16,009 | INFO | RAG sorusu alındı: sana gönderdiğim pdf içindeki alt başlıkları bana söyler misin
+2026-06-11 23:54:19,669 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-11 23:54:19,672 | INFO | RAG için 3 kaynak bulundu.
+2026-06-11 23:54:48,206 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-11 23:55:01,217 | INFO | Asistan cevabı:  Cevap:
+Technical Skills, Yapay Zekânın Kullanım Alanları
+
+Kaynaklar:
+- Kaynak 1, Sayfa 1
+- Kaynak 2, Sayfa 2 (İki kaynağın aynı içerikte bulunması nedeniyle iki kez belirtildi.)
+2026-06-11 23:55:01,217 | INFO | Cevap süresi: 45.21 saniye
