@@ -1,0 +1,10 @@
+2026-06-11 22:00:54,912 | INFO | PDF yüklendi: EnglishCV.pdf
+2026-06-11 22:00:54,916 | INFO | Vectorstore oluşturuluyor: uploads\EnglishCV.pdf
+2026-06-11 22:00:55,225 | INFO | PDF sayfa sayısı: 2
+2026-06-11 22:00:55,225 | INFO | Chunk sayısı: 4
+2026-06-11 22:01:13,424 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-11 22:01:13,454 | INFO | Vectorstore başarıyla oluşturuldu.
+2026-06-11 22:01:13,456 | INFO | PDF vektör veritabanına işlendi: EnglishCV.pdf
+2026-06-11 22:01:29,475 | INFO | PDF yüklendi: EnglishCV.pdf
+2026-06-11 22:01:29,477 | INFO | PDF vektör veritabanına işlendi: EnglishCV.pdf
+2026-06-11 22:01:55,351 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"

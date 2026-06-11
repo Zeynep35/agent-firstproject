@@ -1,14 +1,23 @@
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_ollama import ChatOllama, OllamaEmbeddings
-from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.sqlite import SqliteSaver
+import sqlite3
 import streamlit as st
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 import os
+import logging
 
+logging.basicConfig(
+    filename="agent.log",
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    encoding="utf-8"
+)
+logger = logging.getLogger(__name__)
 
 @tool
 def get_weather(city: str) -> str:
@@ -46,6 +55,10 @@ def get_llm():
 def get_agent():
     llm = get_llm()
 
+    conn = sqlite3.connect("memory.sqlite", check_same_thread=False)
+    checkpointer = SqliteSaver(conn) 
+    checkpointer.setup()
+
     agent = create_agent(
         model=llm,
         tools=[],
@@ -57,7 +70,7 @@ def get_agent():
         - Kısa ve net Türkçe cevap ver.
         - Kendini kullanıcıyla karıştırma.
         """,
-        checkpointer=InMemorySaver(),
+        checkpointer=checkpointer,
     )
 
     return agent
@@ -65,8 +78,12 @@ def get_agent():
 
 @st.cache_resource
 def create_vectorstore(pdf_path: str):
+    logger.info(f"Vectorstore oluşturuluyor: {pdf_path}")
+
     loader = PyPDFLoader(pdf_path)
     documents = loader.load()
+
+    logger.info(f"PDF sayfa sayısı: {len(documents)}")
 
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=700,
@@ -74,6 +91,8 @@ def create_vectorstore(pdf_path: str):
     )
 
     chunks = splitter.split_documents(documents)
+
+    logger.info(f"Chunk sayısı: {len(chunks)}")
 
     embeddings = OllamaEmbeddings(
         model="nomic-embed-text"
@@ -85,15 +104,24 @@ def create_vectorstore(pdf_path: str):
         persist_directory="./chroma_db"
     )
 
+    logger.info("Vectorstore başarıyla oluşturuldu.")
+    
     return vectorstore
-
 
 def ask_rag(question: str, vectorstore):
     docs = vectorstore.similarity_search(question, k=3)
 
-    context = "\n\n".join(
-        [doc.page_content for doc in docs]
-    )
+    context = ""
+
+    for i, doc in enumerate(docs, start=1):
+        page = doc.metadata.get("page", "Bilinmiyor")
+
+        context += f"""
+[KAYNAK {i}]
+Sayfa: {page + 1 if isinstance(page, int) else page}
+İçerik:
+{doc.page_content}
+"""
 
     llm = get_llm()
 
@@ -101,7 +129,7 @@ def ask_rag(question: str, vectorstore):
 Sen Türkçe cevap veren bir RAG asistanısın.
 
 Aşağıdaki belge parçalarını kullanarak soruyu cevapla.
-Eğer cevap belgede yoksa "Bu bilgi belgede bulunmuyor." de.
+Cevabın sonunda hangi kaynakları kullandığını belirt.
 
 Belge parçaları:
 {context}
@@ -109,7 +137,17 @@ Belge parçaları:
 Kullanıcı sorusu:
 {question}
 
-Cevap kısa ve net olsun:
+Cevap formatı:
+
+Cevap:
+...
+
+Kaynaklar:
+- Kaynak 1, Sayfa ...
+- Kaynak 2, Sayfa ...
+
+Eğer cevap belgede yoksa:
+"Bu bilgi belgede bulunmuyor." de.
 """
 
     response = llm.invoke(prompt)
@@ -151,11 +189,26 @@ agent = get_agent()
 
 st.title("AgentDemo + RAG")
 
+st.sidebar.title("Ayarlar")
+
+thread_id = st.sidebar.text_input(
+    "Sohbet ID",
+    value="zeynep_1"
+)
+
+st.sidebar.info(
+    "Her farklı Sohbet ID ayrı hafıza kullanır. Örnek: zeynep_1, test_1, pdf_1"
+)
+
 config = {
     "configurable": {
-        "thread_id": "zeynep_1"
+        "thread_id": thread_id
     }
 }
+
+if st.sidebar.button("Ekran geçmişini temizle"):
+    st.session_state.messages = []
+    st.rerun()
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -167,6 +220,8 @@ if "vectorstore" not in st.session_state:
 uploaded_file = st.file_uploader("PDF yükle", type=["pdf"])
 
 if uploaded_file is not None:
+    logger.info(f"PDF yüklendi: {uploaded_file.name}")
+
     os.makedirs("uploads", exist_ok=True)
 
     pdf_path = os.path.join("uploads", uploaded_file.name)
@@ -175,6 +230,8 @@ if uploaded_file is not None:
         f.write(uploaded_file.getbuffer())
 
     st.session_state.vectorstore = create_vectorstore(pdf_path)
+
+    logger.info(f"PDF vektör veritabanına işlendi: {uploaded_file.name}")
 
     st.success("PDF işlendi. Artık belge hakkında soru sorabilirsin.")
 
