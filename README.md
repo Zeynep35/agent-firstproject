@@ -2,6 +2,12 @@
 
 Bu proje, local LLM kullanarak çalışan basit ama geliştirilebilir bir yapay zeka agent uygulamasıdır. Projede Ollama üzerinden local model çalıştırılır, Streamlit ile arayüz sağlanır, LangGraph ile kısa süreli hafıza eklenir ve PDF dosyaları üzerinden RAG sistemi kullanılır.
 
+## Demo
+
+### PDF RAG Sistemi
+
+![RAG Demo](screenshots/rag-demo.png)
+
 ## Özellikler
 
 * Local LLM desteği
@@ -232,3 +238,4 @@ chromadb
 ## Amaç
 
 Bu proje, local LLM kullanarak çalışan bir agent sisteminin temel yapılarını öğrenmek için geliştirilmiştir. Amaç; LangChain, LangGraph, Ollama, memory, router ve RAG kavramlarını tek bir pratik uygulamada birleştirmektir.
+
