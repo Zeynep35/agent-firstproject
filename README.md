@@ -20,6 +20,24 @@ teknolojilerini öğrenmek amacıyla geliştirilmiş ilk çalışan sürümdür.
 
 ---
 
+# Son Güncelleme
+
+Version 2.0 ile proje modüler mimariye taşınmaktadır.
+
+Yeni yapı:
+
+```text
+app.py
+agent_core.py
+rag.py
+router.py
+tools.py
+logger_config.py
+```
+
+Bu yapı sayesinde proje daha okunabilir, sürdürülebilir ve geliştirilebilir hale gelmiştir.
+```
+
 ## Demo
 
 ### PDF RAG Sistemi
@@ -429,5 +447,23 @@ Bu proje;
 * RAG
 
 konularını öğrenmek ve gerçek bir yapay zeka uygulaması geliştirme sürecini deneyimlemek amacıyla geliştirilmiştir.
+
+# Bu Projede Öğrendiklerim
+
+Bu proje geliştirilirken aşağıdaki kavramlar üzerinde çalışıldı:
+
+- Agent mimarisi
+- LangChain
+- LangGraph
+- Checkpointer mantığı
+- SQLite Memory
+- RAG mimarisi
+- Embedding sistemleri
+- ChromaDB
+- Router tasarımı
+- Logging
+- Streamlit uygulamaları
+- Modüler Python proje yapısı
+
 
 
