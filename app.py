@@ -1,3 +1,5 @@
+from logger_config import logger
+
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_ollama import ChatOllama, OllamaEmbeddings
@@ -12,20 +14,6 @@ import time
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
-
-
-# =====================
-# LOGGING
-# =====================
-
-logging.basicConfig(
-    filename="agent.log",
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    encoding="utf-8"
-)
-
-logger = logging.getLogger(__name__)
 
 
 # =====================
