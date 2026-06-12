@@ -216,6 +216,36 @@ Loglanan olaylar:
 
 ---
 
+# Roadmap
+
+## Version 1.0 
+
+- [x] Streamlit UI
+- [x] LangChain Agent
+- [x] LangGraph Memory
+- [x] SQLite Checkpointer
+- [x] PDF RAG
+- [x] ChromaDB
+- [x] Logging
+- [x] Thread System
+
+## Version 2.0 
+
+- [x] Modüler Mimari
+- [ ] Multi PDF Desteği
+- [ ] Agentic RAG
+- [ ] Chat Export
+- [ ] Streaming Response
+- [ ] FAISS Entegrasyonu
+
+## Version 3.0 
+
+- [ ] Web Search
+- [ ] Long-Term Memory
+- [ ] Docker
+- [ ] REST API
+- [ ] Authentication
+
 # Kurulum
 
 Gerekli paketleri yükleyin:
