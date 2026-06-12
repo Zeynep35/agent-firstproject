@@ -36,7 +36,6 @@ logger_config.py
 ```
 
 Bu yapı sayesinde proje daha okunabilir, sürdürülebilir ve geliştirilebilir hale gelmiştir.
-```
 
 ## Demo
 
@@ -53,6 +52,7 @@ Bu demo ekranında:
 * Thread bazlı sohbet yönetimi
 
 özellikleri gösterilmektedir.
+```
 
 ---
 
