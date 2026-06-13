@@ -77,3 +77,53 @@ Kaynaklar:
 - Kaynak 1, Sayfa 1
 - Kaynak 2, Sayfa 2 (İki kaynağın aynı içerikte bulunması nedeniyle iki kez belirtildi.)
 2026-06-11 23:55:01,217 | INFO | Cevap süresi: 45.21 saniye
+2026-06-12 22:41:11,762 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-12 22:41:11,767 | INFO | Vectorstore oluşturuluyor: uploads\proje_deneme_pdf.pdf
+2026-06-12 22:41:11,954 | INFO | PDF sayfa sayısı: 2
+2026-06-12 22:41:11,955 | INFO | Chunk sayısı: 3
+2026-06-12 22:41:15,058 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-12 22:41:15,085 | INFO | Vectorstore başarıyla oluşturuldu.
+2026-06-12 22:41:15,087 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-12 22:41:30,449 | INFO | PDF yüklendi: proje_deneme_pdf.pdf
+2026-06-12 22:41:30,452 | INFO | PDF vektör veritabanına işlendi: proje_deneme_pdf.pdf
+2026-06-12 22:41:30,453 | INFO | Kullanıcı mesajı: yapay zeka nedir pdf içinden söyle
+2026-06-12 22:41:30,454 | INFO | Thread ID: zeynep_1
+2026-06-12 22:41:30,455 | INFO | Router: RAG seçildi.
+2026-06-12 22:41:30,455 | INFO | RAG sorusu alındı: yapay zeka nedir pdf içinden söyle
+2026-06-12 22:41:32,878 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-12 22:41:32,883 | INFO | RAG için 3 kaynak bulundu.
+2026-06-12 22:42:31,710 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-12 22:43:19,964 | INFO | Asistan cevabı:  Cevap: Yapay zeka, insan seviyesinde düşünme ve öğrenme yeteneğine sahip olması hedeflenen bir teknolojiye denir. Günümüzde henüz tam anlamıyla geliştirilememiştir. Süper yapay zekâ, insan zekâsını aşan teorik yapay zekâ sistemlerini ifade eder. Makine öğrenmesi, sistemlerin açıkça programlanmadan verilerden öğrenmesini sağlar. Başlıca yöntemler: denetimli öğrenme, denetimsiz öğrenme ve pekiştirmeli öğrenme. Büyük dil modelleri (LLM), büyük miktarda metin verisi üzerinde eğitilir. Örnek modeller: GPT, Claude, Gemini, Llama ve Mistral. Bu modeller, metin üretebilir.
+
+Kaynaklar:
+- Kaynak 1, Sayfa 1
+- Kaynak 2, Sayfa 1
+- Kaynak 3, Sayfa 1
+2026-06-12 22:43:19,964 | INFO | Cevap süresi: 109.51 saniye
+2026-06-13 23:44:17,158 | INFO | Kullanıcı mesajı: merhaba
+2026-06-13 23:44:17,159 | INFO | Thread ID: zeynep_1
+2026-06-13 23:44:17,161 | INFO | Router: Agent seçildi.
+2026-06-13 23:44:50,802 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 23:44:55,944 | ERROR | Cevap üretilirken hata oluştu.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 115, in <module>
+    assistant_answer = result["messages"][-1].content
+NameError: name 'result' is not defined
+2026-06-13 23:49:41,142 | INFO | Kullanıcı mesajı: merhaba
+2026-06-13 23:49:41,142 | INFO | Thread ID: zeynep_1
+2026-06-13 23:49:41,144 | INFO | Router: Agent seçildi.
+2026-06-13 23:49:47,282 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 23:49:49,828 | INFO | Asistan cevabı:  Merhaba! Zeynep'den hoş geldiniz!
+2026-06-13 23:49:49,828 | INFO | Cevap süresi: 8.69 saniye
+2026-06-13 23:57:45,792 | INFO | Kullanıcı mesajı: merhaba
+2026-06-13 23:57:45,792 | INFO | Thread ID: zeynep_1
+2026-06-13 23:57:45,793 | INFO | Router: Agent seçildi.
+2026-06-13 23:58:16,476 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 23:58:19,069 | INFO | Asistan cevabı:  Merhaba! Zeynep'den hoş geldiniz!
+2026-06-13 23:58:19,070 | INFO | Cevap süresi: 33.28 saniye
+2026-06-14 00:02:46,728 | INFO | Kullanıcı mesajı: sen nesin
+2026-06-14 00:02:46,728 | INFO | Thread ID: zeynep_1
+2026-06-14 00:02:46,730 | INFO | Router: Agent seçildi.
+2026-06-14 00:02:52,361 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-14 00:02:59,572 | INFO | Asistan cevabı:   Ben bir asistanım ve konuşma geçmişini dikkatlice kullanabilirim. Kendimi hatırla, ben bir asistanım!
+2026-06-14 00:02:59,572 | INFO | Cevap süresi: 12.84 saniye

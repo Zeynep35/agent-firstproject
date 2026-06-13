@@ -1,5 +1,5 @@
 from logger_config import logger
-from agent_core import get_agent
+from agent_core import get_agent, stream_llm_response
 from rag import create_vectorstore
 from router import router
 
@@ -93,6 +93,8 @@ if user_input:
     with st.chat_message("user"):
         st.write(user_input)
 
+    assistant_answer = ""
+
     try:
         quick_answer = router(
             user_input,
@@ -101,13 +103,17 @@ if user_input:
 
         if quick_answer is not None:
             assistant_answer = quick_answer
-        else:
-            result = agent.invoke(
-                {"messages": [{"role": "user", "content": user_input}]},
-                config=config
-            )
 
-            assistant_answer = result["messages"][-1].content
+            with st.chat_message("assistant"):
+                st.write(assistant_answer)
+
+        else:
+            with st.chat_message("assistant"):
+                placeholder = st.empty()
+
+                for token in stream_llm_response(user_input):
+                    assistant_answer += token
+                    placeholder.write(assistant_answer)
 
         elapsed_time = time.time() - start_time
 
@@ -118,12 +124,12 @@ if user_input:
         logger.exception("Cevap üretilirken hata oluştu.")
         assistant_answer = "Bir hata oluştu. Detaylar agent.log dosyasına kaydedildi."
 
+        with st.chat_message("assistant"):
+            st.write(assistant_answer)
+
     st.session_state.messages.append(
         {"role": "assistant", "content": assistant_answer}
     )
-
-    with st.chat_message("assistant"):
-        st.write(assistant_answer)
 
 
 if st.button("Hafızayı göster"):

@@ -37,3 +37,10 @@ Kurallar:
     )
 
     return agent
+
+@st.cache_resource
+def stream_llm_response(user_input: str):
+    llm = get_llm()
+
+    for chunk in llm.stream(user_input):
+        yield chunk.content
