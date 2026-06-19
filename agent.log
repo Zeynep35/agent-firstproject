@@ -332,3 +332,30 @@ Kaynaklar:
 Kaynaklar:
 - proje_deneme_pdf.pdf / Sayfa 1
 2026-06-19 23:33:27,155 | INFO | Cevap süresi: 121.15 saniye
+2026-06-19 23:48:33,829 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-19 23:48:35,468 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:48:35,490 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-19 23:49:19,838 | INFO | Kullanıcı mesajı: sana yüklediğim pdf içindeki ilk başlığı söyler misin
+2026-06-19 23:49:19,839 | INFO | Thread ID: zeynep_1
+2026-06-19 23:49:19,840 | INFO | Router: Agentic RAG seçildi.
+2026-06-19 23:49:19,840 | INFO | Agentic RAG: İlk arama başlatıldı.
+2026-06-19 23:49:22,193 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:49:22,196 | INFO | Agentic RAG: Final cevap üretiliyor.
+2026-06-19 23:50:49,303 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-19 23:51:03,238 | INFO | Asistan cevabı:  Evet, PDF'deki ilk başlık "Yapay Zekânın Kullanım Alanları" olup, kaynak belgesi proje_deneme_pdf.pdf sayfası 2'de bulunur. (Kaynak: proje_deneme_pdf.pdf, Sayfa: 2)
+
+Kaynaklar:
+- proje_deneme_pdf.pdf / Sayfa 2
+2026-06-19 23:51:03,239 | INFO | Cevap süresi: 103.40 saniye
+2026-06-19 23:52:07,111 | INFO | Kullanıcı mesajı: peki aynı pdf içinde uzay yolculuğundan bahsediliyor mu?
+2026-06-19 23:52:07,112 | INFO | Thread ID: zeynep_1
+2026-06-19 23:52:07,112 | INFO | Router: Agentic RAG seçildi.
+2026-06-19 23:52:07,112 | INFO | Agentic RAG: İlk arama başlatıldı.
+2026-06-19 23:52:07,482 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:52:07,485 | INFO | Agentic RAG: Final cevap üretiliyor.
+2026-06-19 23:52:09,579 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-19 23:52:15,286 | INFO | Asistan cevabı:  Bu bilgi PDF'lerde bulunamadı. (Bu soruyu ilgili PDF dosyasında bulunmuyor.)
+
+Kaynaklar:
+- proje_deneme_pdf.pdf / Sayfa 2
+2026-06-19 23:52:15,286 | INFO | Cevap süresi: 8.18 saniye
