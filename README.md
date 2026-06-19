@@ -16,14 +16,11 @@ Version 2.0 ile proje artık çalışan bir demo olmaktan çıkıp daha modüler
 
 ## Demo Görseli
 
-```text
-screenshots/rag-demo.png
-```
-```html
+
 <img src="screenshots/rag-demo.jpg" width="800">
 <img src="screenshots/yz1.jpg" width="800">
 <img src="screenshots/yz2.jpg" width="800">
-```
+
 
 ## Version 2.0 Özeti
 
@@ -117,7 +114,9 @@ agent-firstproject/
 ├── uploads/
 ├── chroma_db/
 └── screenshots/
-    └── rag-demo.png
+    └── rag-demo.jpg
+    └── yz1.jpg
+    └── yz2.jpg
 ```
 
 ---
