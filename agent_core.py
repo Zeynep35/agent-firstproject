@@ -5,6 +5,7 @@ from langchain.agents import create_agent
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.sqlite import SqliteSaver
 
+
 @st.cache_resource
 def get_llm():
     return ChatOllama(
@@ -19,6 +20,7 @@ def get_agent():
     llm = get_llm()
 
     conn = sqlite3.connect("memory.sqlite", check_same_thread=False)
+
     checkpointer = SqliteSaver(conn)
     checkpointer.setup()
 
@@ -38,9 +40,41 @@ Kurallar:
 
     return agent
 
-@st.cache_resource
-def stream_llm_response(user_input: str):
-    llm = get_llm()
 
-    for chunk in llm.stream(user_input):
-        yield chunk.content
+def stream_llm_response(user_input: str, config=None):
+    """
+    Agent üzerinden cevap üretir.
+    Böylece SQLite checkpointer / thread_id hafızası çalışır.
+    """
+
+    agent = get_agent()
+
+    if config is None:
+        config = {
+            "configurable": {
+                "thread_id": "default"
+            }
+        }
+
+    result = agent.invoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": user_input
+                }
+            ]
+        },
+        config=config
+    )
+
+    messages = result.get("messages", [])
+
+    if not messages:
+        yield "Cevap üretilemedi."
+        return
+
+    last_message = messages[-1]
+    content = getattr(last_message, "content", str(last_message))
+
+    yield content

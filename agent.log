@@ -127,3 +127,82 @@ NameError: name 'result' is not defined
 2026-06-14 00:02:52,361 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
 2026-06-14 00:02:59,572 | INFO | Asistan cevabı:   Ben bir asistanım ve konuşma geçmişini dikkatlice kullanabilirim. Kendimi hatırla, ben bir asistanım!
 2026-06-14 00:02:59,572 | INFO | Cevap süresi: 12.84 saniye
+2026-06-14 00:09:59,204 | INFO | Kullanıcı mesajı: merhaba
+2026-06-14 00:09:59,205 | INFO | Thread ID: zeynep_1
+2026-06-14 00:09:59,206 | INFO | Router: Agent seçildi.
+2026-06-14 00:10:04,328 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-14 00:10:57,786 | INFO | Asistan cevabı:  Merhaba! Nasılsın? (Hello! How are you?)
+
+Bu bir örnek bir konuşma sistemi olarak tasarlanmıştır. Sizden istediğiniz gibi konuşabilir ve yardımcı olabilir. Lütfen sorularınızı sormaktan başlayalım! (This is an example of a conversation system designed to communicate with you. I can talk and help as much as you want. Let's start with your questions!)
+
+Bu sistem, Türkçe ve İngilizce konuşma dili destekler. Sizin istediğiniz gibi konuşabilir ve yardımcı olabilir. Lütfen sorularınızı sormaktan başlayalım! (This system supports both Turkish and English languages. I can talk and help as much as you want. Let's start with your questions!)
+
+Merhaba, nasılsın? (Hello, how are you?)
+
+Bu sistem, sizin istediğiniz gibi konuşabilir ve yardımcı olabilir. Lütfen sorularınızı sormaktan başlayalım! (This system can talk and help as much as you want. Let's start with your questions!)
+
+Merhaba, nasılsın? (Hello, how are you?)
+2026-06-14 00:10:57,786 | INFO | Cevap süresi: 58.58 saniye
+2026-06-17 23:20:18,020 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-17 23:20:29,781 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-17 23:20:29,810 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-17 23:36:56,720 | INFO | Kullanıcı mesajı: yapay zeka pdfde nasıl açıklanıyor 
+2026-06-17 23:36:56,720 | INFO | Thread ID: zeynep_1
+2026-06-17 23:36:56,722 | INFO | Router: RAG seçildi.
+2026-06-17 23:36:56,722 | ERROR | Cevap üretilirken hata oluştu.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 105, in <module>
+    quick_answer = router(
+  File "C:\Users\zeynep\Desktop\agent-firstproject\router.py", line 16, in router
+    return ask_rag(user_input, vectorstore)
+TypeError: ask_rag() missing 1 required positional argument: 'llm'
+2026-06-17 23:37:54,661 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-17 23:37:56,157 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-17 23:37:56,176 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-17 23:38:06,205 | INFO | Kullanıcı mesajı: sana verdiğim pdf ne hakkında 
+2026-06-17 23:38:06,205 | INFO | Thread ID: zeynep_1
+2026-06-17 23:38:06,206 | INFO | Router: RAG seçildi.
+2026-06-17 23:38:06,206 | ERROR | Cevap üretilirken hata oluştu.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 105, in <module>
+    quick_answer = router(
+  File "C:\Users\zeynep\Desktop\agent-firstproject\router.py", line 16, in router
+    return ask_rag(user_input, vectorstore)
+TypeError: ask_rag() missing 1 required positional argument: 'llm'
+2026-06-17 23:52:06,236 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-17 23:52:07,734 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-17 23:52:07,751 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-17 23:52:19,997 | INFO | Kullanıcı mesajı: pdfin başlıklarını verir misin
+2026-06-17 23:52:19,997 | INFO | Thread ID: zeynep_1
+2026-06-17 23:52:19,999 | ERROR | Cevap üretilirken hata oluştu.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 106, in <module>
+    quick_answer = router(
+TypeError: router() got an unexpected keyword argument 'llm'
+2026-06-18 00:02:16,368 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-18 00:02:17,838 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-18 00:02:17,855 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-18 00:02:37,271 | INFO | Kullanıcı mesajı: bana pdf içeriği hakkında bir cümlelik özet verir misin
+2026-06-18 00:02:37,271 | INFO | Thread ID: zeynep_1
+2026-06-18 00:02:37,272 | ERROR | Cevap üretilirken hata oluştu.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 106, in <module>
+    quick_answer = router(
+TypeError: router() got an unexpected keyword argument 'llm'
+2026-06-18 00:06:05,705 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-18 00:06:06,661 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-18 00:06:06,685 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-18 00:06:33,755 | INFO | Kullanıcı mesajı: pdf ana başlığı söyle
+2026-06-18 00:06:33,755 | INFO | Thread ID: zeynep_1
+2026-06-18 00:06:33,757 | INFO | Router: RAG seçildi.
+2026-06-18 00:06:35,571 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-18 00:07:53,239 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-18 00:08:00,258 | INFO | Asistan cevabı:  Ana başlık, "Yapay Zekânın Kullanım Alanları" olup, bu bilgi PDF'lerde bulunmaktadır.
+
+Kaynaklar:
+- proje_deneme_pdf.pdf / Sayfa 2
+- proje_deneme_pdf.pdf / Sayfa 2
+- proje_deneme_pdf.pdf / Sayfa 2
+- proje_deneme_pdf.pdf / Sayfa 2
+- proje_deneme_pdf.pdf / Sayfa 2
+2026-06-18 00:08:00,258 | INFO | Cevap süresi: 86.50 saniye

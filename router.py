@@ -1,7 +1,8 @@
 from rag import ask_rag
 from logger_config import logger
 
-def router(user_input: str, vectorstore=None):
+
+def router(user_input: str, vectorstore=None, llm=None):
     text = user_input.lower()
 
     if vectorstore is not None and (
@@ -11,9 +12,28 @@ def router(user_input: str, vectorstore=None):
         or "dosya" in text
         or "bu metinde" in text
         or "bu belgede" in text
+        or "sana verdiğim" in text
+        or "yüklediğim" in text
     ):
         logger.info("Router: RAG seçildi.")
-        return ask_rag(user_input, vectorstore)
+
+        answer, sources = ask_rag(
+            question=user_input,
+            vectorstore=vectorstore,
+            llm=llm
+        )
+
+        if sources:
+            source_text = "\n".join(
+                [
+                    f"- {source.get('source')} / Sayfa {source.get('page')}"
+                    for source in sources
+                ]
+            )
+
+            return f"{answer}\n\nKaynaklar:\n{source_text}"
+
+        return answer
 
     if "hava" in text:
         logger.info("Router: Hava durumu seçildi.")

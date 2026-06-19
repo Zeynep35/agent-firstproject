@@ -1,7 +1,7 @@
 from logger_config import logger
-from agent_core import get_agent, stream_llm_response
-from rag import create_vectorstore
+from agent_core import get_agent, stream_llm_response, get_llm
 from router import router
+from rag import create_vectorstore_from_pdfs, load_existing_vectorstore
 
 import streamlit as st
 import os
@@ -9,8 +9,9 @@ import time
 
 
 agent = get_agent()
+llm = get_llm()
 
-st.title("AgentDemo + RAG")
+st.title("AgentDemo + Çoklu PDF RAG")
 
 st.sidebar.title("Ayarlar")
 
@@ -33,7 +34,11 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "vectorstore" not in st.session_state:
-    st.session_state.vectorstore = None
+    try:
+        st.session_state.vectorstore = load_existing_vectorstore()
+    except Exception:
+        logger.exception("Mevcut Chroma veritabanı yüklenemedi.")
+        st.session_state.vectorstore = None
 
 
 if st.sidebar.button("Ekran geçmişini temizle"):
@@ -49,28 +54,30 @@ if st.sidebar.button("Logları göster"):
         st.sidebar.warning("Henüz log dosyası yok.")
 
 
-uploaded_file = st.file_uploader("PDF yükle", type=["pdf"])
+uploaded_files = st.file_uploader(
+    "PDF yükle",
+    accept_multiple_files=True,
+    type=["pdf"]
+)
 
-if uploaded_file is not None:
-    try:
-        logger.info(f"PDF yüklendi: {uploaded_file.name}")
+if uploaded_files:
+    st.info(f"{len(uploaded_files)} PDF seçildi.")
 
-        os.makedirs("uploads", exist_ok=True)
+    if st.button("PDF'leri işle"):
+        try:
+            file_names = [file.name for file in uploaded_files]
+            logger.info(f"PDF'ler yüklendi: {file_names}")
 
-        pdf_path = os.path.join("uploads", uploaded_file.name)
+            vectorstore, message = create_vectorstore_from_pdfs(uploaded_files)
 
-        with open(pdf_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+            st.session_state.vectorstore = vectorstore
 
-        st.session_state.vectorstore = create_vectorstore(pdf_path)
+            logger.info(message)
+            st.success(message)
 
-        logger.info(f"PDF vektör veritabanına işlendi: {uploaded_file.name}")
-
-        st.success("PDF işlendi. Artık belge hakkında soru sorabilirsin.")
-
-    except Exception:
-        logger.exception("PDF işlenirken hata oluştu.")
-        st.error("PDF işlenirken hata oluştu. Detaylar agent.log dosyasına kaydedildi.")
+        except Exception:
+            logger.exception("PDF'ler işlenirken hata oluştu.")
+            st.error("PDF'ler işlenirken hata oluştu. Detaylar agent.log dosyasına kaydedildi.")
 
 
 for message in st.session_state.messages:
@@ -98,7 +105,8 @@ if user_input:
     try:
         quick_answer = router(
             user_input,
-            vectorstore=st.session_state.vectorstore
+            vectorstore=st.session_state.vectorstore,
+            llm = llm
         )
 
         if quick_answer is not None:
