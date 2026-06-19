@@ -206,3 +206,129 @@ Kaynaklar:
 - proje_deneme_pdf.pdf / Sayfa 2
 - proje_deneme_pdf.pdf / Sayfa 2
 2026-06-18 00:08:00,258 | INFO | Cevap süresi: 86.50 saniye
+2026-06-19 22:39:24,868 | ERROR | Mevcut Chroma veritabanı yüklenemedi.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\client.py", line 641, in _validate_tenant_database
+    self._admin_client.get_tenant(name=tenant)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\client.py", line 721, in get_tenant
+    return self._server.get_tenant(name=name)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\rust.py", line 175, in get_tenant
+    tenant = self.bindings.get_tenant(name)
+AttributeError: 'RustBindingsAPI' object has no attribute 'bindings'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\client.py", line 105, in __init__
+    self._validate_tenant_database(tenant=self.tenant, database=self.database)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\client.py", line 650, in _validate_tenant_database
+    raise ValueError(
+ValueError: Could not connect to tenant default_tenant. Are you sure it exists?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 76, in <module>
+    st.session_state.vectorstore = load_existing_vectorstore()
+  File "C:\Users\zeynep\Desktop\agent-firstproject\rag.py", line 33, in load_existing_vectorstore
+    vectorstore = Chroma(
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\langchain_chroma\vectorstores.py", line 374, in __init__
+    self._client = chromadb.PersistentClient(
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\__init__.py", line 228, in PersistentClient
+    return ClientCreator(tenant=tenant, database=database, settings=settings)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\client.py", line 114, in __init__
+    SharedSystemClient._release_system(self._identifier)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\shared_system_client.py", line 124, in _release_system
+    system.stop()
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\config.py", line 473, in stop
+    component.stop()
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\rust.py", line 131, in stop
+    del self.bindings
+AttributeError: bindings
+2026-06-19 22:39:24,868 | ERROR | Mevcut Chroma veritabanı yüklenemedi.
+Traceback (most recent call last):
+  File "C:\Users\zeynep\Desktop\agent-firstproject\app.py", line 76, in <module>
+    st.session_state.vectorstore = load_existing_vectorstore()
+  File "C:\Users\zeynep\Desktop\agent-firstproject\rag.py", line 33, in load_existing_vectorstore
+    vectorstore = Chroma(
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\langchain_chroma\vectorstores.py", line 374, in __init__
+    self._client = chromadb.PersistentClient(
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\__init__.py", line 228, in PersistentClient
+    return ClientCreator(tenant=tenant, database=database, settings=settings)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\client.py", line 69, in __init__
+    super().__init__(settings=settings)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\shared_system_client.py", line 25, in __init__
+    SharedSystemClient._create_system_if_not_exists(self._identifier, settings)
+  File "C:\Users\zeynep\Desktop\agent-firstproject\venv\lib\site-packages\chromadb\api\shared_system_client.py", line 49, in _create_system_if_not_exists
+    return cls._identifier_to_system[identifier]
+KeyError: './chroma_db'
+2026-06-19 22:39:41,712 | INFO | Kullanıcı mesajı: merhaba nasılsın
+2026-06-19 22:39:41,712 | INFO | Thread ID: zeynep_1
+2026-06-19 22:39:41,713 | INFO | Router: Agent seçildi.
+2026-06-19 22:39:53,726 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-19 22:40:04,633 | INFO | Asistan cevabı:  Merhaba! Ben, bir asistanım. Senin geçmişte size hakkında bilgi verdiğimizi hatırlyorum. Özellikle senin adını ve soyadını unutmuyoruz. Siz ne ister misiniz?
+2026-06-19 22:40:04,633 | INFO | Cevap süresi: 22.92 saniye
+2026-06-19 23:17:45,817 | INFO | Kullanıcı mesajı: pdf ne hakkında
+2026-06-19 23:17:45,817 | INFO | Thread ID: zeynep_1
+2026-06-19 23:17:45,818 | INFO | Router: Agentic RAG seçildi.
+2026-06-19 23:17:45,819 | INFO | Agentic RAG: İlk arama başlatıldı.
+2026-06-19 23:17:53,287 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:17:53,320 | INFO | Agentic RAG: Final cevap üretiliyor.
+2026-06-19 23:18:40,576 | INFO | PDF'ler yüklendi: ['proje_deneme_pdf.pdf']
+2026-06-19 23:18:41,907 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:18:41,951 | INFO | 1 PDF işlendi. 3 parça Chroma'ya eklendi.
+2026-06-19 23:18:52,739 | INFO | Kullanıcı mesajı: pdf ne hakkında 
+2026-06-19 23:18:52,740 | INFO | Thread ID: zeynep_1
+2026-06-19 23:18:52,741 | INFO | Router: Agentic RAG seçildi.
+2026-06-19 23:18:52,742 | INFO | Agentic RAG: İlk arama başlatıldı.
+2026-06-19 23:18:52,895 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:18:52,911 | INFO | Agentic RAG: Final cevap üretiliyor.
+2026-06-19 23:19:26,488 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-19 23:20:15,589 | INFO | Asistan cevabı:  PDF (Portable Document Format) bir elektronik belge biçimidir. Bu biçimde oluşturulan belgeler, platform ve uygulama sürümlerine bağlı olmadan okunabilir, yazılım programlarının değişikliklerine karşı dayanıklıdır. PDF'lerin çok fazla alanda kullanıldığından, bilgi ve medya paylaşımı, yazılım geliştirme, eğitim, sağlık ve finans sektörlerinde sıklıkla kullanılmaktadır. Bu belgelerdeki içeriklerin gözden geçirilerek değişken bilgilerin bulunmasına rağmen, PDF'lerdeki belirli bir bilgiyi açıkça yoksa "Bu bilgi PDF'lerde bulunamadı." diye cevap verilmelidir. (Kaynak: https://tr.wikipedia.org/wiki/PDF)
+
+Kaynaklar:
+- proje_deneme_pdf.pdf / Sayfa 2
+2026-06-19 23:20:15,589 | INFO | Cevap süresi: 82.85 saniye
+2026-06-19 23:20:54,661 | INFO | Kullanıcı mesajı: sana yüklediğim pdf ne hakkında 
+2026-06-19 23:20:54,661 | INFO | Thread ID: zeynep_1
+2026-06-19 23:20:54,662 | INFO | Router: Agentic RAG seçildi.
+2026-06-19 23:20:54,662 | INFO | Agentic RAG: İlk arama başlatıldı.
+2026-06-19 23:20:56,870 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:20:56,872 | INFO | Agentic RAG: Final cevap üretiliyor.
+2026-06-19 23:20:58,192 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-19 23:22:31,706 | INFO | Asistan cevabı:  Yüklediğiniz PDF, "proje_deneme_pdf" adlı bir belgedir. Bu belge iki sayfalıdır ve her sayfada aynı içerik bulunmaktadır. Aynı sayfa içeriği şu şekilde söz konusudur:
+
+• Özet çıkarabilir
+• Kod yazabilir
+• Soruları cevaplayabilir
+Yapay Zekânın Kullanım Alanları
+Sağlık
+- Hastalık teşhisi ve tıbbi görüntü analizi.
+Eğitim
+- Kişiselleştirilmiş öğrenme sistemleri.
+Finans
+- Dolandırıcılık tespiti ve risk analizi.
+Yazılım Geliştirme
+- Kod üretimi ve hata ayıklama.
+Sonuç
+Yapay zekâ teknolojileri hızla gelişmeye devam etmektedir. Gelecekte eğitim, sağlık, finans ve yazılım geliştirme gibi birçok alanda daha fazla kullanılacağı öngörülmektedir.
+
+Bu belgede ayrıca yapay zekânın kullanım alanları sağlık, eğitim, finans ve yazılım geliştirme olarak belirtilmiştir. Hastalık teşhisi ve tıbbi görüntü analizi, kişiselleştirilmiş öğrenme sistemleri, dolandırıcılık tespiti ve risk analizi, kod üretimi ve hata ayıklama alanlarında yapay zekânın kullanımı açıklanmaktadır.
+
+Kaynak: proje_deneme_pdf.pdf
+
+Kaynaklar:
+- proje_deneme_pdf.pdf / Sayfa 2
+2026-06-19 23:22:31,707 | INFO | Cevap süresi: 97.05 saniye
+2026-06-19 23:31:26,000 | INFO | Kullanıcı mesajı: Bu belgede olmayan bir şeyi soruyorum: Bu PDF'de uzay yolculuğu anlatılıyor mu?
+2026-06-19 23:31:26,000 | INFO | Thread ID: zeynep_1
+2026-06-19 23:31:26,001 | INFO | Router: Agentic RAG seçildi.
+2026-06-19 23:31:26,002 | INFO | Agentic RAG: İlk arama başlatıldı.
+2026-06-19 23:31:27,315 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+2026-06-19 23:31:27,319 | INFO | Agentic RAG: Final cevap üretiliyor.
+2026-06-19 23:33:22,279 | INFO | HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-19 23:33:27,155 | INFO | Asistan cevabı:  Bu bilgi PDF'lerde bulunamadı. (Kaynak: proje_deneme_pdf.pdf)
+
+Kaynaklar:
+- proje_deneme_pdf.pdf / Sayfa 1
+2026-06-19 23:33:27,155 | INFO | Cevap süresi: 121.15 saniye

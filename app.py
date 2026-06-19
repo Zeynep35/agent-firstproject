@@ -6,12 +6,14 @@ from rag import create_vectorstore_from_pdfs, load_existing_vectorstore
 import streamlit as st
 import os
 import time
+import json
+from datetime import datetime
 
 
 agent = get_agent()
 llm = get_llm()
 
-st.title("AgentDemo + Çoklu PDF RAG")
+st.title("AgentDemo V2 - Multi PDF Agentic RAG")
 
 st.sidebar.title("Ayarlar")
 
@@ -29,6 +31,42 @@ config = {
         "thread_id": thread_id
     }
 }
+
+def export_chat_as_txt(messages, thread_id):
+    lines = []
+
+    lines.append(f"Chat Export")
+    lines.append(f"Sohbet ID: {thread_id}")
+    lines.append(f"Tarih: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    lines.append("=" * 50)
+    lines.append("")
+
+    for message in messages:
+        role = message.get("role", "unknown")
+        content = message.get("content", "")
+
+        if role == "user":
+            role_name = "Kullanıcı"
+        elif role == "assistant":
+            role_name = "Asistan"
+        else:
+            role_name = role
+
+        lines.append(f"{role_name}:")
+        lines.append(content)
+        lines.append("-" * 50)
+
+    return "\n".join(lines)
+
+
+def export_chat_as_json(messages, thread_id):
+    data = {
+        "thread_id": thread_id,
+        "exported_at": datetime.now().isoformat(),
+        "messages": messages
+    }
+
+    return json.dumps(data, ensure_ascii=False, indent=2)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -119,7 +157,7 @@ if user_input:
             with st.chat_message("assistant"):
                 placeholder = st.empty()
 
-                for token in stream_llm_response(user_input):
+                for token in stream_llm_response(user_input, config=config):
                     assistant_answer += token
                     placeholder.write(assistant_answer)
 
@@ -143,3 +181,30 @@ if user_input:
 if st.button("Hafızayı göster"):
     state = agent.get_state(config)
     st.write(state.values)
+
+if st.session_state.messages:
+    txt_data = export_chat_as_txt(
+        st.session_state.messages,
+        thread_id
+    )
+
+    json_data = export_chat_as_json(
+        st.session_state.messages,
+        thread_id
+    )
+
+    st.sidebar.download_button(
+        label="Chat'i TXT indir",
+        data=txt_data,
+        file_name=f"chat_export_{thread_id}.txt",
+        mime="text/plain"
+    )
+
+    st.sidebar.download_button(
+        label="Chat'i JSON indir",
+        data=json_data,
+        file_name=f"chat_export_{thread_id}.json",
+        mime="application/json"
+    )
+else:
+    st.sidebar.info("Export için henüz mesaj yok.")

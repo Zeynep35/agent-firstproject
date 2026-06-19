@@ -1,24 +1,15 @@
-from rag import ask_rag
+from agentic_rag import should_use_rag, answer_with_agentic_rag
 from logger_config import logger
 
 
 def router(user_input: str, vectorstore=None, llm=None):
     text = user_input.lower()
 
-    if vectorstore is not None and (
-        "pdf" in text
-        or "belge" in text
-        or "doküman" in text
-        or "dosya" in text
-        or "bu metinde" in text
-        or "bu belgede" in text
-        or "sana verdiğim" in text
-        or "yüklediğim" in text
-    ):
-        logger.info("Router: RAG seçildi.")
+    if vectorstore is not None and should_use_rag(user_input):
+        logger.info("Router: Agentic RAG seçildi.")
 
-        answer, sources = ask_rag(
-            question=user_input,
+        answer, sources = answer_with_agentic_rag(
+            user_input=user_input,
             vectorstore=vectorstore,
             llm=llm
         )
