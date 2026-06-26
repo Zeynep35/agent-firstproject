@@ -1,15 +1,18 @@
 import sqlite3
 import streamlit as st
+import os
 
 from langchain.agents import create_agent
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.sqlite import SqliteSaver
 
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 @st.cache_resource
 def get_llm():
     return ChatOllama(
         model="mistral:latest",
+        base_url=OLLAMA_BASE_URL,
         num_gpu=0,
         temperature=0.1
     )

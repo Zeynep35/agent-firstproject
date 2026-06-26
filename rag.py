@@ -2,11 +2,13 @@ import os
 import tempfile #yuklenen dosları gecici kayıt eder. Ve onun yerine dosya oluşturur. 
 from uuid import uuid4 #pdfler benzersiz id verir.
 
+
 from langchain_ollama import OllamaEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 # Chroma veritabanının kaydedileceği klasör
 PERSIST_DIR = "./chroma_db"
@@ -20,7 +22,7 @@ def get_embeddings():
     Embedding modelini oluşturur.
     PDF parçalarını vektöre çevirmek için kullanılır.
     """
-    return OllamaEmbeddings(model="nomic-embed-text")
+    return OllamaEmbeddings(model="nomic-embed-text", base_url=OLLAMA_BASE_URL)
 
 
 def load_existing_vectorstore():
