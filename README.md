@@ -12,6 +12,11 @@ Bu proje, yapay zeka agent mimarisini öğrenmek ve gerçek bir local AI uygulam
 
 Version 2.0 ile proje artık çalışan bir demo olmaktan çıkıp daha modüler, geliştirilebilir ve Agentic RAG destekli bir yapıya taşınmıştır.
 
+Proje Docker ile containerize edildi.
+Streamlit arayüzü Docker içinde çalışmaktadır.
+Ollama modelleri host makinede çalışır ve container içinden host.docker.internal üzerinden erişilir.
+Multi-PDF RAG sistemi ChromaDB ile PDF içeriklerinden soru-cevap yapabilir.
+
 ---
 
 ## Demo Görseli

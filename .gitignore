@@ -2,3 +2,10 @@ venv/
 .env
 __pycache__/
 *.pyc
+# Local runtime data
+memory.sqlite
+memory.sqlite-shm
+memory.sqlite-wal
+agent.log
+chroma_db/
+uploads/
