@@ -16,6 +16,7 @@ Proje Docker ile containerize edildi.
 Streamlit arayüzü Docker içinde çalışmaktadır.
 Ollama modelleri host makinede çalışır ve container içinden host.docker.internal üzerinden erişilir.
 Multi-PDF RAG sistemi ChromaDB ile PDF içeriklerinden soru-cevap yapabilir.
+GitHub Actions üzerinden otomatik Docker image build/publish pipeline kuruldu.
 
 ---
 
@@ -653,11 +654,12 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 * [ ] Görsel PDF okuma
 * [ ] PDF duplicate engelleme
 * [ ] PDF listeleme paneli
-* [ ] PDF silme sistemi
+* [x] PDF silme sistemi
 * [ ] Gelişmiş long-term memory
 * [ ] Gerçek streaming response
 * [ ] REST API
-* [ ] Docker desteği
+* [x] Docker desteği
+* [x] Github actions
 * [ ] Authentication sistemi
 * [ ] Kullanıcı bazlı belge alanları
 * [ ] Public / private knowledge ayrımı

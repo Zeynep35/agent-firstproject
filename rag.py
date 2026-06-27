@@ -154,3 +154,85 @@ Soru:
     ]
 
     return answer, sources
+
+def list_indexed_pdfs(vectorstore):
+    """
+    ChromaDB içinde kayıtlı PDF isimlerini listeler.
+    """
+    if vectorstore is None:
+        return []
+
+    try:
+        data = vectorstore.get(include=["metadatas"])
+        metadatas = data.get("metadatas", []) or []
+
+        pdf_names = sorted(
+            {
+                metadata.get("source") or metadata.get("file_name")
+                for metadata in metadatas
+                if metadata and (metadata.get("source") or metadata.get("file_name"))
+            }
+        )
+
+        return pdf_names
+
+    except Exception as e:
+        return []
+
+
+def delete_pdf_from_vectorstore(vectorstore, file_name):
+    """
+    Seçilen PDF'e ait chunkları ChromaDB'den siler.
+    """
+    if vectorstore is None:
+        return vectorstore, "Önce PDF veritabanı yüklenmeli."
+
+    if not file_name:
+        return vectorstore, "Silinecek PDF seçilmedi."
+
+    try:
+        data = vectorstore.get(
+            where={"source": file_name},
+            include=["metadatas"]
+        )
+
+        ids = data.get("ids", []) or []
+
+        if not ids:
+            data = vectorstore.get(
+                where={"file_name": file_name},
+                include=["metadatas"]
+            )
+            ids = data.get("ids", []) or []
+
+        if not ids:
+            return vectorstore, f"{file_name} için kayıt bulunamadı."
+
+        vectorstore.delete(ids=ids)
+
+        return vectorstore, f"{file_name} PDF'ine ait {len(ids)} parça silindi."
+
+    except Exception as e:
+        return vectorstore, f"PDF silinirken hata oluştu: {e}"
+
+
+def clear_vectorstore(vectorstore):
+    """
+    ChromaDB içindeki tüm PDF chunklarını temizler.
+    """
+    if vectorstore is None:
+        return vectorstore, "Temizlenecek PDF verisi yok."
+
+    try:
+        data = vectorstore.get(include=["metadatas"])
+        ids = data.get("ids", []) or []
+
+        if not ids:
+            return vectorstore, "Zaten silinecek veri yok."
+
+        vectorstore.delete(ids=ids)
+
+        return vectorstore, f"Toplam {len(ids)} parça silindi. PDF veritabanı temizlendi."
+
+    except Exception as e:
+        return vectorstore, f"Tüm veriler silinirken hata oluştu: {e}"

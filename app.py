@@ -8,6 +8,13 @@ import os
 import time
 import json
 from datetime import datetime
+from rag import (
+    create_vectorstore_from_pdfs,
+    load_existing_vectorstore,
+    list_indexed_pdfs,
+    delete_pdf_from_vectorstore,
+    clear_vectorstore
+)
 
 
 agent = get_agent()
@@ -208,3 +215,51 @@ if st.session_state.messages:
     )
 else:
     st.sidebar.info("Export için henüz mesaj yok.")
+
+with st.sidebar:
+    st.header("📄 PDF Yönetimi")
+
+    if "vectorstore" not in st.session_state:
+        st.session_state.vectorstore = load_existing_vectorstore()
+
+    indexed_pdfs = list_indexed_pdfs(st.session_state.vectorstore)
+
+    if indexed_pdfs:
+        st.caption(f"{len(indexed_pdfs)} PDF veritabanında kayıtlı.")
+
+        selected_pdf_to_delete = st.selectbox(
+            "Kayıtlı PDF seç",
+            indexed_pdfs
+        )
+
+        if st.button("🗑️ Seçili PDF'i Sil", use_container_width=True):
+            st.session_state.vectorstore, delete_message = delete_pdf_from_vectorstore(
+                st.session_state.vectorstore,
+                selected_pdf_to_delete
+            )
+            st.success(delete_message)
+            st.rerun()
+
+        st.divider()
+
+        confirm_clear = st.checkbox("Tüm PDF verilerini silmeyi onaylıyorum")
+
+        if st.button(
+            "🚨 Tüm PDF Verilerini Temizle",
+            use_container_width=True,
+            disabled=not confirm_clear
+        ):
+            st.session_state.vectorstore, clear_message = clear_vectorstore(
+                st.session_state.vectorstore
+            )
+            st.warning(clear_message)
+            st.rerun()
+
+    else:
+        st.info("Henüz kayıtlı PDF yok.")
+
+    st.divider()
+
+    with st.expander("🧠 Hafıza / Debug"):
+        if st.button("Hafızayı göster", use_container_width=True):
+            st.write(st.session_state)
