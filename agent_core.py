@@ -14,7 +14,7 @@ def get_llm():
         model="mistral:latest",
         base_url=OLLAMA_BASE_URL,
         num_gpu=0,
-        temperature=0.1
+        temperature=0
     )
 
 

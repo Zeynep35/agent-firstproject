@@ -650,8 +650,9 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 ## Version 3.0 Planı
 
 * [ ] Gerçek Web Search entegrasyonu
-* [ ] OCR desteği
-* [ ] Görsel PDF okuma
+* [x] OCR desteği
+* [x] Taranmış/görsel PDF içindeki yazıları okuma
+* [ ] Vision ile görsel PDF yorumlama
 * [ ] PDF duplicate engelleme
 * [ ] PDF listeleme paneli
 * [x] PDF silme sistemi
