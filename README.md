@@ -1,4 +1,4 @@
-# AgentDemo V2 - Ollama + LangChain + LangGraph + Streamlit + Agentic RAG
+# AgentDemo V3.1 - Web Search destekli Multi PDF Agentic RAG
 
 AgentDemo V2, local LLM kullanarak çalışan, çoklu PDF okuyabilen, kalıcı hafızaya sahip ve Agentic RAG mimarisiyle belge sorgulama yapabilen bir yapay zeka agent uygulamasıdır.
 
@@ -26,6 +26,9 @@ GitHub Actions üzerinden otomatik Docker image build/publish pipeline kuruldu.
 <img src="screenshots/rag-demo.jpg" width="800">
 <img src="screenshots/yz1.jpg" width="800">
 <img src="screenshots/yz2.jpg" width="800">
+<img src="screenshots/yz3.jpg" width="800">
+<img src="screenshots/yz4.jpg" width="800">
+<img src="screenshots/yz5.jpg" width="800">
 
 
 ## Version 2.0 Özeti
@@ -649,7 +652,7 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 
 ## Version 3.0 Planı
 
-* [ ] Gerçek Web Search entegrasyonu
+* [x] Gerçek Web Search entegrasyonu
 * [x] OCR desteği
 * [x] Taranmış/görsel PDF içindeki yazıları okuma
 * [ ] Vision ile görsel PDF yorumlama

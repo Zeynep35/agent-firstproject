@@ -11,3 +11,5 @@ langgraph-checkpoint-sqlite
 pymupdf
 pytesseract
 pillow
+langchain-tavily
+python-dotenv
