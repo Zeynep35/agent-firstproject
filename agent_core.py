@@ -11,10 +11,13 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 @st.cache_resource
 def get_llm():
     return ChatOllama(
-        model="mistral:latest",
+        model="gemma3:1b",
         base_url=OLLAMA_BASE_URL,
         num_gpu=0,
-        temperature=0
+        temperature=0,
+        num_ctx=2048,
+        num_predict=512,
+        keep_alive=0
     )
 
 

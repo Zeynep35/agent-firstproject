@@ -1,8 +1,12 @@
-# AgentDemo V3.1 - Web Search destekli Multi PDF Agentic RAG
+# AgentDemo V3.0 - Local LLM Multi PDF Agentic RAG
 
-AgentDemo V2, local LLM kullanarak çalışan, çoklu PDF okuyabilen, kalıcı hafızaya sahip ve Agentic RAG mimarisiyle belge sorgulama yapabilen bir yapay zeka agent uygulamasıdır.
+AgentDemo V3.0, local LLM kullanarak çalışan, çoklu PDF okuyabilen, OCR destekli, gerçek zamanlı streaming response verebilen ve Agentic RAG mimarisiyle belge sorgulama yapabilen yapay zeka agent uygulamasıdır.
 
 Projede Ollama üzerinden local model çalıştırılır, Streamlit ile kullanıcı arayüzü sağlanır, LangGraph ile SQLite tabanlı kalıcı konuşma hafızası kullanılır ve ChromaDB ile PDF belgeleri üzerinde RAG sistemi uygulanır.
+
+Uygulama; metin tabanlı PDF dosyalarını okuyabilir, taranmış/görsel PDF dosyalarındaki yazıları OCR ile çıkarabilir, aynı PDF dosyasının tekrar eklenmesini engelleyebilir ve eklenen PDF dosyalarını sidebar üzerinden listeleyip silebilir.
+
+Ayrıca gerçek web search entegrasyonu, Docker desteği, GitHub Actions ile otomatik Docker image build süreci ve canlı akan streaming response sistemi projeye eklenmiştir.
 
 ---
 
@@ -10,13 +14,15 @@ Projede Ollama üzerinden local model çalıştırılır, Streamlit ile kullanı
 
 Bu proje, yapay zeka agent mimarisini öğrenmek ve gerçek bir local AI uygulaması geliştirmek amacıyla oluşturulmuştur.
 
-Version 2.0 ile proje artık çalışan bir demo olmaktan çıkıp daha modüler, geliştirilebilir ve Agentic RAG destekli bir yapıya taşınmıştır.
+Uygulama Ne Yapabilir?
 
-Proje Docker ile containerize edildi.
-Streamlit arayüzü Docker içinde çalışmaktadır.
-Ollama modelleri host makinede çalışır ve container içinden host.docker.internal üzerinden erişilir.
-Multi-PDF RAG sistemi ChromaDB ile PDF içeriklerinden soru-cevap yapabilir.
-GitHub Actions üzerinden otomatik Docker image build/publish pipeline kuruldu.
+AgentDemo V3.0 ile kullanıcılar PDF dosyaları yükleyebilir, belgeler hakkında soru sorabilir, taranmış PDF dosyalarındaki yazıları OCR ile okuyabilir ve cevapları gerçek zamanlı streaming olarak alabilir.
+
+Sistem aynı PDF dosyasının tekrar eklenmesini engeller. Eklenen PDF dosyaları sidebar üzerinden listelenebilir, tek tek silinebilir veya tüm PDF veritabanı temizlenebilir.
+
+PDF dışındaki sorularda agent normal local LLM cevabı üretebilir. Güncel bilgi gerektiren sorular için gerçek web search entegrasyonu kullanılabilir.
+
+Proje Docker ile çalıştırılabilir ve GitHub Actions üzerinden otomatik Docker image build süreci desteklenir.
 
 ---
 
@@ -656,11 +662,11 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 * [x] OCR desteği
 * [x] Taranmış/görsel PDF içindeki yazıları okuma
 * [ ] Vision ile görsel PDF yorumlama
-* [ ] PDF duplicate engelleme
-* [ ] PDF listeleme paneli
+* [x] PDF duplicate engelleme
+* [x] PDF listeleme paneli
 * [x] PDF silme sistemi
 * [ ] Gelişmiş long-term memory
-* [ ] Gerçek streaming response
+* [x] Gerçek streaming response
 * [ ] REST API
 * [x] Docker desteği
 * [x] Github actions

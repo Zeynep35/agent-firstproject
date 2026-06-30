@@ -2,6 +2,7 @@ import io
 import os
 import tempfile
 from uuid import uuid4
+import hashlib
 
 import fitz
 import pytesseract
@@ -32,6 +33,48 @@ def get_embeddings():
         model="nomic-embed-text",
         base_url=OLLAMA_BASE_URL
     )
+
+def calculate_file_hash(file_bytes: bytes):
+    """
+    PDF dosyasının içeriğinden benzersiz hash üretir.
+    Aynı dosya tekrar yüklenirse aynı hash çıkar.
+    """
+    return hashlib.sha256(file_bytes).hexdigest()
+
+
+def get_indexed_pdf_signatures(vectorstore):
+    """
+    ChromaDB içindeki mevcut PDF hash, dosya adı ve dosya boyutlarını getirir.
+    Eski kayıtlar file_hash içermeyebilir, bu yüzden isim ve boyut da kontrol edilir.
+    """
+    existing_hashes = set()
+    existing_name_size_pairs = set()
+
+    if vectorstore is None:
+        return existing_hashes, existing_name_size_pairs
+
+    try:
+        data = vectorstore.get(include=["metadatas"])
+        metadatas = data.get("metadatas", []) or []
+
+        for metadata in metadatas:
+            if not metadata:
+                continue
+
+            file_hash = metadata.get("file_hash")
+            file_name = metadata.get("file_name") or metadata.get("source")
+            file_size = metadata.get("file_size")
+
+            if file_hash:
+                existing_hashes.add(file_hash)
+
+            if file_name and file_size:
+                existing_name_size_pairs.add((file_name, int(file_size)))
+
+    except Exception:
+        pass
+
+    return existing_hashes, existing_name_size_pairs
 
 
 def load_existing_vectorstore():
@@ -135,6 +178,7 @@ def load_pdf_with_ocr_fallback(pdf_path, file_name):
 def create_vectorstore_from_pdfs(uploaded_files):
     """
     Streamlit'ten gelen çoklu PDF dosyalarını okur,
+    duplicate PDF'leri engeller,
     sayfalara böler, chunklara ayırır ve Chroma'ya ekler.
     Normal PDF metni yoksa OCR ile okumayı dener.
     """
@@ -144,27 +188,63 @@ def create_vectorstore_from_pdfs(uploaded_files):
 
     vectorstore = load_existing_vectorstore()
 
+    existing_hashes, existing_name_size_pairs = get_indexed_pdf_signatures(vectorstore)
+
+    seen_hashes_this_batch = set()
+    seen_name_size_this_batch = set()
+
     all_docs = []
+    skipped_files = []
+    processed_files = []
 
     for uploaded_file in uploaded_files:
         tmp_path = None
 
         try:
-            # Streamlit uploaded_file bellekte durduğu için önce geçici PDF dosyasına yazıyoruz.
+            file_bytes = uploaded_file.getvalue()
+            file_hash = calculate_file_hash(file_bytes)
+            file_name = uploaded_file.name
+            file_size = len(file_bytes)
+            name_size_pair = (file_name, file_size)
+
+            # 1. Aynı yükleme içinde aynı içerik tekrar seçilmiş mi?
+            if file_hash in seen_hashes_this_batch:
+                skipped_files.append(f"{file_name} (aynı yükleme içinde tekrar)")
+                continue
+
+            # 2. Aynı yükleme içinde aynı isim + boyut tekrar seçilmiş mi?
+            if name_size_pair in seen_name_size_this_batch:
+                skipped_files.append(f"{file_name} (aynı isim ve boyutla tekrar seçildi)")
+                continue
+
+            # 3. Daha önce ChromaDB'ye aynı içerik eklenmiş mi?
+            if file_hash in existing_hashes:
+                skipped_files.append(f"{file_name} (zaten eklenmiş)")
+                continue
+
+            # 4. Eski kayıtlar file_hash içermeyebilir, isim + boyut fallback kontrolü
+            if name_size_pair in existing_name_size_pairs:
+                skipped_files.append(f"{file_name} (aynı isim ve boyutla zaten eklenmiş)")
+                continue
+
+            seen_hashes_this_batch.add(file_hash)
+            seen_name_size_this_batch.add(name_size_pair)
+            processed_files.append(file_name)
+
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-                tmp_file.write(uploaded_file.getvalue())
+                tmp_file.write(file_bytes)
                 tmp_path = tmp_file.name
 
-            # PDF'i oku. Metin yoksa OCR ile okumayı dene.
             docs = load_pdf_with_ocr_fallback(
                 tmp_path,
-                uploaded_file.name
+                file_name
             )
 
-            # Her sayfaya kaynak bilgisi ekle
             for doc in docs:
-                doc.metadata["source"] = uploaded_file.name
-                doc.metadata["file_name"] = uploaded_file.name
+                doc.metadata["source"] = file_name
+                doc.metadata["file_name"] = file_name
+                doc.metadata["file_hash"] = file_hash
+                doc.metadata["file_size"] = file_size
 
                 page_value = doc.metadata.get("page", 0)
 
@@ -173,8 +253,6 @@ def create_vectorstore_from_pdfs(uploaded_files):
                 except Exception:
                     page_value = 0
 
-                # OCR sayfaları zaten 1'den başlıyor.
-                # PyPDFLoader sayfaları genelde 0'dan başlatıyor.
                 if doc.metadata.get("extraction_type") == "ocr":
                     doc.metadata["page"] = max(page_value, 1)
                 else:
@@ -183,20 +261,20 @@ def create_vectorstore_from_pdfs(uploaded_files):
             all_docs.extend(docs)
 
         finally:
-            # Geçici dosyayı temizle
             if tmp_path and os.path.exists(tmp_path):
                 os.remove(tmp_path)
 
-    # Boş içerikleri temizle
     all_docs = [
         doc for doc in all_docs
         if doc.page_content and doc.page_content.strip()
     ]
 
     if not all_docs:
+        if skipped_files:
+            return vectorstore, "Yeni PDF eklenmedi. Atlanan PDF'ler: " + ", ".join(skipped_files)
+
         return vectorstore, "PDF okundu ama içinden metin çıkarılamadı. OCR da metin bulamadı."
 
-    # PDF sayfalarını küçük parçalara böl
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=700,
         chunk_overlap=100
@@ -207,10 +285,8 @@ def create_vectorstore_from_pdfs(uploaded_files):
     if not chunks:
         return vectorstore, "PDF işlendi ama chunk oluşturulamadı."
 
-    # Her chunk için benzersiz ID üret
     ids = [str(uuid4()) for _ in chunks]
 
-    # Chroma'ya ekle
     vectorstore.add_documents(
         documents=chunks,
         ids=ids
@@ -221,13 +297,15 @@ def create_vectorstore_from_pdfs(uploaded_files):
         if doc.metadata.get("extraction_type") == "ocr"
     )
 
-    message = f"{len(uploaded_files)} PDF işlendi. {len(chunks)} parça Chroma'ya eklendi."
+    message = f"{len(processed_files)} PDF işlendi. {len(chunks)} parça Chroma'ya eklendi."
+
+    if skipped_files:
+        message += " Atlanan PDF'ler: " + ", ".join(skipped_files)
 
     if ocr_page_count > 0:
         message += f" OCR ile okunan sayfa sayısı: {ocr_page_count}."
 
     return vectorstore, message
-
 
 def ask_rag(question, vectorstore, llm):
     if vectorstore is None:
@@ -284,6 +362,82 @@ Soru:
     ]
 
     return answer, sources
+
+def stream_rag_answer(question, vectorstore, llm):
+    """
+    PDF RAG cevabını token token stream eder.
+    Streamlit tarafında gerçek zamanlı yazdırmak için kullanılır.
+    """
+
+    if vectorstore is None:
+        yield "Önce PDF yüklemen gerekiyor."
+        return
+
+    if llm is None:
+        yield "LLM yüklenemedi. agent_core.py içindeki get_llm() fonksiyonunu kontrol et."
+        return
+
+    retriever = vectorstore.as_retriever(
+        search_kwargs={"k": 8}
+    )
+
+    docs = retriever.invoke(question)
+
+    if not docs:
+        yield "Bu bilgi PDF'lerde bulunamadı."
+        return
+
+    context = "\n\n".join(
+        [
+            f"Kaynak: {doc.metadata.get('source')} | Sayfa: {doc.metadata.get('page')}\n{doc.page_content}"
+            for doc in docs
+        ]
+    )
+
+    prompt = f"""
+Aşağıdaki PDF içeriklerine göre cevap ver.
+Sen bir PDF analiz asistanısın.
+
+Kurallar:
+- Sadece aşağıdaki PDF bağlamına göre cevap ver.
+- Bağlamda açıkça bulunmayan bilgiyi tahmin etme.
+- Emin değilsen "Bu bilgi PDF içinde açıkça bulunamadı." de.
+- OCR hataları olabilir; bu yüzden cevabını kaynak cümlelere dayandır.
+- Cevabın sonunda kullandığın PDF adı ve sayfa numarasını yaz.
+
+Bağlam:
+{context}
+
+Soru:
+{question}
+
+Cevap:
+"""
+
+    for chunk in llm.stream(prompt):
+        token = chunk.content if hasattr(chunk, "content") else str(chunk)
+
+        if token:
+            yield token
+
+    sources = [
+        {
+            "source": doc.metadata.get("source"),
+            "page": doc.metadata.get("page"),
+            "extraction_type": doc.metadata.get("extraction_type", "text")
+        }
+        for doc in docs
+    ]
+
+    if sources:
+        yield "\n\n---\nKaynaklar:\n"
+
+        for source in sources:
+            yield (
+                f"- {source.get('source')} / "
+                f"Sayfa {source.get('page')} / "
+                f"{source.get('extraction_type')}\n"
+            )
 
 
 def list_indexed_pdfs(vectorstore):
