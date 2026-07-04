@@ -3,6 +3,8 @@ import os
 import tempfile
 from uuid import uuid4
 import hashlib
+from vision import describe_image
+from logger_config import logger
 
 import fitz
 import pytesseract
@@ -13,6 +15,8 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.documents import Document
 from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
@@ -174,14 +178,101 @@ def load_pdf_with_ocr_fallback(pdf_path, file_name):
 
     return ocr_docs
 
+def load_pdf_with_vision(pdf_path, file_name, file_hash=None, file_size=None, max_pages=1):
+    """
+    PDF sayfalarını görsele çevirir,
+    vision model ile açıklar ve Document listesi döndürür.
+    """
 
-def create_vectorstore_from_pdfs(uploaded_files):
+    vision_docs = []
+    pdf = None
+
+    try:
+        pdf = fitz.open(pdf_path)
+
+        total_pages = min(len(pdf), max_pages)
+
+        for page_index in range(total_pages):
+            page = pdf[page_index]
+
+            pix = page.get_pixmap(
+                matrix=fitz.Matrix(2, 2),
+                alpha=False
+            )
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_image:
+                tmp_image = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+                image_path = tmp_image.name
+                tmp_image.close()
+
+                pix.save(image_path)
+
+            try:
+                vision_text = describe_image(
+                    image_path=image_path,
+                    question=(
+                        "Bu PDF sayfasını görsel olarak analiz et. "
+                        "Sayfadaki karakterleri, görselleri, renkleri, şekilleri, tabloları "
+                        "ve okunabilir yazıları Türkçe açıkla."
+                        
+                    )
+                )
+
+                if vision_text and vision_text.strip():
+                    vision_docs.append(
+                        Document(
+                            page_content=(
+                                "Vision görsel açıklaması:\n"
+                                + vision_text.strip()
+                            ),
+                            metadata={
+                                "source": file_name,
+                                "file_name": file_name,
+                                "page": page_index + 1,
+                                "file_hash": file_hash,
+                                "file_size": file_size,
+                                "extraction_type": "vision"
+
+                            }
+                        )
+                    )
+
+            except Exception:
+                logger.exception("Vision analizi sırasında hata oluştu.")
+
+            finally:
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+
+    except Exception:
+        logger.exception("PDF vision için görsele çevrilirken hata oluştu.")
+
+    finally:
+        if pdf is not None:
+            pdf.close()
+
+    return vision_docs
+
+
+def create_vectorstore_from_pdfs(
+    uploaded_files,
+    use_vision=False,
+    max_vision_pages=3,
+    enable_vision=None,
+    vision_max_pages=None
+):
     """
     Streamlit'ten gelen çoklu PDF dosyalarını okur,
     duplicate PDF'leri engeller,
     sayfalara böler, chunklara ayırır ve Chroma'ya ekler.
     Normal PDF metni yoksa OCR ile okumayı dener.
     """
+
+    if enable_vision is not None:
+        use_vision = enable_vision
+
+    if vision_max_pages is not None:
+        max_vision_pages = vision_max_pages
 
     if not uploaded_files:
         return None, "PDF yüklenmedi."
@@ -240,6 +331,16 @@ def create_vectorstore_from_pdfs(uploaded_files):
                 file_name
             )
 
+            if use_vision:
+                vision_docs = load_pdf_with_vision(
+                    pdf_path=tmp_path,
+                    file_name=uploaded_file.name,
+                    file_hash=file_hash,
+                    max_pages=max_vision_pages
+                )
+
+                docs.extend(vision_docs)
+
             for doc in docs:
                 doc.metadata["source"] = file_name
                 doc.metadata["file_name"] = file_name
@@ -253,7 +354,7 @@ def create_vectorstore_from_pdfs(uploaded_files):
                 except Exception:
                     page_value = 0
 
-                if doc.metadata.get("extraction_type") == "ocr":
+                if doc.metadata.get("extraction_type") in ["ocr", "vision"]:
                     doc.metadata["page"] = max(page_value, 1)
                 else:
                     doc.metadata["page"] = page_value + 1
@@ -297,6 +398,11 @@ def create_vectorstore_from_pdfs(uploaded_files):
         if doc.metadata.get("extraction_type") == "ocr"
     )
 
+    vision_page_count = sum(
+        1 for doc in all_docs
+        if doc.metadata.get("extraction_type") == "vision"
+    )
+
     message = f"{len(processed_files)} PDF işlendi. {len(chunks)} parça Chroma'ya eklendi."
 
     if skipped_files:
@@ -304,6 +410,9 @@ def create_vectorstore_from_pdfs(uploaded_files):
 
     if ocr_page_count > 0:
         message += f" OCR ile okunan sayfa sayısı: {ocr_page_count}."
+    
+    if vision_page_count > 0:
+        message += f" Vision ile yorumlanan sayfa sayısı: {vision_page_count}."
 
     return vectorstore, message
 
@@ -340,6 +449,10 @@ Kurallar:
 - Emin değilsen "Bu bilgi PDF içinde açıkça bulunamadı." de.
 - OCR hataları olabilir; bu yüzden cevabını kaynak cümlelere dayandır.
 - Cevabın sonunda kullandığın PDF adı ve sayfa numarasını yaz.
+- Vision görsel açıklaması varsa bunu PDF sayfasının görsel yorumu olarak kullan.
+- Kullanıcı görsel soruyorsa ve bağlamda "Vision görsel açıklaması" varsa mutlaka bu açıklamaya göre cevap ver.
+- Vision açıklaması kısa veya eksik olsa bile "bulunamadı" deme; mevcut açıklamayı yorumla.
+- Cevabın sonunda kullandığın PDF adı, sayfa numarası ve içerik türünü yaz.
 
 Bağlam:
 {context}
@@ -404,6 +517,10 @@ Kurallar:
 - Emin değilsen "Bu bilgi PDF içinde açıkça bulunamadı." de.
 - OCR hataları olabilir; bu yüzden cevabını kaynak cümlelere dayandır.
 - Cevabın sonunda kullandığın PDF adı ve sayfa numarasını yaz.
+- Vision görsel açıklaması varsa bunu PDF sayfasının görsel yorumu olarak kullan.
+- Kullanıcı görsel soruyorsa ve bağlamda "Vision görsel açıklaması" varsa mutlaka bu açıklamaya göre cevap ver.
+- Vision açıklaması kısa veya eksik olsa bile "bulunamadı" deme; mevcut açıklamayı yorumla.
+- Cevabın sonunda kullandığın PDF adı, sayfa numarası ve içerik türünü yaz.
 
 Bağlam:
 {context}

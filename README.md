@@ -661,7 +661,7 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 * [x] Gerçek Web Search entegrasyonu
 * [x] OCR desteği
 * [x] Taranmış/görsel PDF içindeki yazıları okuma
-* [ ] Vision ile görsel PDF yorumlama
+* [x] Vision ile görsel PDF yorumlama
 * [x] PDF duplicate engelleme
 * [x] PDF listeleme paneli
 * [x] PDF silme sistemi

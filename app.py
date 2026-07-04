@@ -306,6 +306,19 @@ uploaded_files = st.file_uploader(
     type=["pdf"]
 )
 
+use_vision = st.checkbox(
+    "Vision analizi de yap",
+    value=False,
+    help="PDF sayfalarını görsel olarak yorumlar. Daha yavaş çalışır."
+)
+
+max_vision_pages = st.number_input(
+    "Vision ile okunacak maksimum sayfa sayısı",
+    min_value=1,
+    max_value=10,
+    value=3
+)
+
 unique_uploaded_files, duplicate_uploaded_files = filter_duplicate_uploaded_files(
     uploaded_files
 )
@@ -329,7 +342,9 @@ if uploaded_files:
             try:
                 with st.spinner("PDF'ler işleniyor..."):
                     st.session_state.vectorstore, message = create_vectorstore_from_pdfs(
-                        unique_uploaded_files
+                        unique_uploaded_files,
+                        use_vision=use_vision,
+                        max_vision_pages=int(max_vision_pages)
                     )
 
                 st.session_state.process_message = message
