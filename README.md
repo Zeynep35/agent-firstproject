@@ -624,6 +624,18 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 
 ---
 
+## REST API Çalıştırma
+
+
+```bash
+python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload
+
+Swagger dokümantasyonu:
+
+http://127.0.0.1:8000/docs  '''
+
+
+
 ## Version Roadmap
 
 ## Version 1.0
@@ -667,7 +679,20 @@ Not: Web search şu an gerçek internet araması yapmamaktadır.
 * [x] PDF silme sistemi
 * [ ] Gelişmiş long-term memory
 * [x] Gerçek streaming response
-* [ ] REST API
+* [x] REST API
+* [x] FastAPI kurulumu
+* [x] Swagger dokümantasyonu
+* [x] API sağlık kontrolü
+* [x] API üzerinden local LLM chat
+* [x] API üzerinden PDF listeleme
+* [x] API üzerinden PDF RAG sorgulama
+* [x] API üzerinden OCR destekli PDF işleme
+* [x] API üzerinden PDF yükleme
+* [x] API üzerinden OCR destekli PDF işleme
+* [x] API üzerinden Vision destekli PDF görsel yorumlama
+* [x] API üzerinden PDF duplicate engelleme
+* [x] API üzerinden seçili PDF silme
+* [x] API üzerinden tüm PDF veritabanını temizleme
 * [x] Docker desteği
 * [x] Github actions
 * [ ] Authentication sistemi
