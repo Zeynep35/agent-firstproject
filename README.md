@@ -696,6 +696,13 @@ http://127.0.0.1:8000/docs  '''
 * [x] Docker desteği
 * [x] Github actions
 * [ ] Authentication sistemi
+* [x] API Key Authentication
+* [x] `X-API-Key` header kontrolü
+* [x] `.env` üzerinden gizli API key yönetimi
+* [x] `/chat`, `/rag-chat`, `/upload-pdf`, `/pdfs`, `/clear-pdfs`, `/chat/stream` endpointlerini koruma
+* [ ] JWT tabanlı kullanıcı girişi
+* [ ] Kullanıcı bazlı belge alanları
+* [ ] Public / private knowledge ayrımı
 * [ ] Kullanıcı bazlı belge alanları
 * [ ] Public / private knowledge ayrımı
 * [ ] Daha hızlı model ve embedding optimizasyonu

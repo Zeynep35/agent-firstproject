@@ -1,6 +1,8 @@
-from fastapi import FastAPI, UploadFile, File, Form, Query
+from fastapi import FastAPI, UploadFile, File, Form, Query, Depends, HTTPException, status
 from pydantic import BaseModel
 from fastapi.responses import StreamingResponse
+from fastapi.security import APIKeyHeader
+import os
 
 from agent_core import get_llm
 from logger_config import logger
@@ -22,6 +24,34 @@ app = FastAPI(
 )
 
 llm = get_llm()
+
+API_KEY = os.getenv("AGENTDEMO_API_KEY", "dev-secret-key")
+
+api_key_header = APIKeyHeader(
+    name="X-API-Key",
+    auto_error=False
+)
+
+
+def verify_api_key(api_key: str = Depends(api_key_header)):
+    """
+    Basit API Key authentication.
+    /health hariç endpointlerde kullanılacak.
+    """
+
+    if not api_key:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="API key eksik. X-API-Key header göndermelisin."
+        )
+
+    if api_key != API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Geçersiz API key."
+        )
+
+    return api_key
 
 
 class ChatRequest(BaseModel):
@@ -55,7 +85,7 @@ def health():
     }
 
 
-@app.post("/chat")
+@app.post("/chat", dependencies=[Depends(verify_api_key)])
 def chat(request: ChatRequest):
     try:
         if llm is None:
@@ -91,7 +121,7 @@ def format_sources(sources):
 
     return "\n".join(lines)
 
-@app.get("/pdfs")
+@app.get("/pdfs", dependencies=[Depends(verify_api_key)])
 def get_pdfs():
     try:
         vectorstore = load_existing_vectorstore()
@@ -110,7 +140,7 @@ def get_pdfs():
             "error": str(e)
         }
 
-@app.post("/rag-chat")
+@app.post("/rag-chat", dependencies=[Depends(verify_api_key)])
 def rag_chat(request: RagRequest):
     try:
         vectorstore = load_existing_vectorstore()
@@ -138,7 +168,7 @@ def rag_chat(request: RagRequest):
             "sources": []
         }
 
-@app.post("/chat/stream")
+@app.post("/chat/stream", dependencies=[Depends(verify_api_key)])
 def chat_stream(request: ChatRequest):
     """
     API üzerinden streaming cevap üretir.
@@ -185,7 +215,7 @@ def chat_stream(request: ChatRequest):
         media_type="text/plain"
     )
 
-@app.post("/upload-pdf")
+@app.post("/upload-pdf", dependencies=[Depends(verify_api_key)])
 async def upload_pdf(
     file: UploadFile = File(..., description="Yüklenecek PDF dosyası"),
     use_vision: bool = Form(False),
@@ -233,7 +263,7 @@ async def upload_pdf(
             "count": 0
         }
 
-@app.delete("/pdfs")
+@app.delete("/pdfs", dependencies=[Depends(verify_api_key)])
 def delete_pdf(file_name: str = Query(..., description="Silinecek PDF dosya adı")):
     """
     API üzerinden seçili PDF'i ChromaDB'den siler.
@@ -267,7 +297,7 @@ def delete_pdf(file_name: str = Query(..., description="Silinecek PDF dosya adı
             "count": 0
         }
     
-@app.post("/clear-pdfs")
+@app.post("/clear-pdfs", dependencies=[Depends(verify_api_key)])
 def clear_pdfs():
     """
     API üzerinden tüm PDF veritabanını temizler.
