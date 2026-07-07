@@ -695,16 +695,22 @@ http://127.0.0.1:8000/docs  '''
 * [x] API üzerinden tüm PDF veritabanını temizleme
 * [x] Docker desteği
 * [x] Github actions
-* [ ] Authentication sistemi
+* [x] Authentication sistemi
 * [x] API Key Authentication
 * [x] `X-API-Key` header kontrolü
 * [x] `.env` üzerinden gizli API key yönetimi
 * [x] `/chat`, `/rag-chat`, `/upload-pdf`, `/pdfs`, `/clear-pdfs`, `/chat/stream` endpointlerini koruma
-* [ ] JWT tabanlı kullanıcı girişi
-* [ ] Kullanıcı bazlı belge alanları
-* [ ] Public / private knowledge ayrımı
-* [ ] Kullanıcı bazlı belge alanları
-* [ ] Public / private knowledge ayrımı
+* [x] API requestlerinde `user_id` temeli
+* [x] PDF upload için `visibility` alanı temeli
+* [x] JWT tabanlı kullanıcı girişi
+* [x] Kullanıcı bazlı belge alanları
+* [x] Kullanıcı bazlı ChromaDB filtreleme
+* [x] Public / private knowledge ayrımı
+* [x] `/login` endpointi
+* [x] Bearer token authentication
+* [x] Token üzerinden `user_id` belirleme
+* [x] PDF upload sırasında kullanıcıyı token’dan alma
+* [x] RAG sorgularında token kullanıcısına göre belge filtreleme
 * [ ] Daha hızlı model ve embedding optimizasyonu
 
 ---

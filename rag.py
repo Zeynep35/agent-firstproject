@@ -178,7 +178,15 @@ def load_pdf_with_ocr_fallback(pdf_path, file_name):
 
     return ocr_docs
 
-def load_pdf_with_vision(pdf_path, file_name, file_hash=None, file_size=None, max_pages=1):
+def load_pdf_with_vision(
+        pdf_path, 
+        file_name, 
+        file_hash=None, 
+        file_size=None, 
+        max_pages=1,
+        user_id="default_user",
+        visibility="private"
+    ):
     """
     PDF sayfalarını görsele çevirir,
     vision model ile açıklar ve Document listesi döndürür.
@@ -231,7 +239,9 @@ def load_pdf_with_vision(pdf_path, file_name, file_hash=None, file_size=None, ma
                                 "page": page_index + 1,
                                 "file_hash": file_hash,
                                 "file_size": file_size,
-                                "extraction_type": "vision"
+                                "extraction_type": "vision",
+                                "user_id": user_id,
+                                "visibility": visibility
 
                             }
                         )
@@ -259,7 +269,9 @@ def create_vectorstore_from_pdfs(
     use_vision=False,
     max_vision_pages=3,
     enable_vision=None,
-    vision_max_pages=None
+    vision_max_pages=None,
+    user_id="default_user",
+    visibility="private"
 ):
     """
     Streamlit'ten gelen çoklu PDF dosyalarını okur,
@@ -336,7 +348,9 @@ def create_vectorstore_from_pdfs(
                     pdf_path=tmp_path,
                     file_name=uploaded_file.name,
                     file_hash=file_hash,
-                    max_pages=max_vision_pages
+                    max_pages=max_vision_pages,
+                    user_id=user_id,
+                    visibility=visibility
                 )
 
                 docs.extend(vision_docs)
@@ -346,6 +360,8 @@ def create_vectorstore_from_pdfs(
                 doc.metadata["file_name"] = file_name
                 doc.metadata["file_hash"] = file_hash
                 doc.metadata["file_size"] = file_size
+                doc.metadata["user_id"] = user_id
+                doc.metadata["visibility"] = visibility
 
                 page_value = doc.metadata.get("page", 0)
 
@@ -416,18 +432,63 @@ def create_vectorstore_from_pdfs(
 
     return vectorstore, message
 
-def ask_rag(question, vectorstore, llm):
+def filter_docs_for_user(docs, user_id="default_user", include_public=True):
+    """
+    RAG sonuçlarını kullanıcıya göre filtreler.
+
+    Kullanıcı:
+    - kendi private PDF'lerini görebilir
+    - public PDF'leri görebilir
+    - başkasının private PDF'lerini göremez
+    """
+
+    filtered_docs = []
+
+    for doc in docs:
+        metadata = doc.metadata or {}
+
+        doc_user_id = metadata.get("user_id")
+        visibility = metadata.get("visibility", "private")
+
+        # Eski metadata'sız kayıtlar geçici uyumluluk için görünür.
+        if doc_user_id is None:
+            filtered_docs.append(doc)
+            continue
+
+        # Kullanıcının kendi belgesi
+        if doc_user_id == user_id:
+            filtered_docs.append(doc)
+            continue
+
+        # Public belge
+        if include_public and visibility == "public":
+            filtered_docs.append(doc)
+            continue
+
+    return filtered_docs
+
+def ask_rag(question, vectorstore, llm, user_id="default_user"):
     if vectorstore is None:
         return "Önce PDF yüklemen gerekiyor.", []
 
     if llm is None:
         return "LLM yüklenemedi. agent_core.py içindeki get_llm() fonksiyonunu kontrol et.", []
 
-    retriever = vectorstore.as_retriever(
-        search_kwargs={"k": 8}
+    docs = vectorstore.similarity_search(
+        question,
+        k=20
     )
 
-    docs = retriever.invoke(question)
+    docs = [
+        doc for doc in docs
+        if (
+            doc.metadata.get("user_id") == user_id
+            or doc.metadata.get("visibility") == "public"
+            or doc.metadata.get("user_id") is None
+        )
+    ]
+
+    docs = docs[:8]
 
     if not docs:
         return "Bu bilgi PDF'lerde bulunamadı.", []
@@ -476,7 +537,7 @@ Soru:
 
     return answer, sources
 
-def stream_rag_answer(question, vectorstore, llm):
+def stream_rag_answer(question, vectorstore, llm, user_id="default_user"):
     """
     PDF RAG cevabını token token stream eder.
     Streamlit tarafında gerçek zamanlı yazdırmak için kullanılır.
@@ -490,11 +551,21 @@ def stream_rag_answer(question, vectorstore, llm):
         yield "LLM yüklenemedi. agent_core.py içindeki get_llm() fonksiyonunu kontrol et."
         return
 
-    retriever = vectorstore.as_retriever(
-        search_kwargs={"k": 8}
+    docs = vectorstore.similarity_search(
+        question,
+        k=20
     )
 
-    docs = retriever.invoke(question)
+    docs = [
+        doc for doc in docs
+        if (
+            doc.metadata.get("user_id") == user_id
+            or doc.metadata.get("visibility") == "public"
+            or doc.metadata.get("user_id") is None
+        )
+    ]
+
+    docs = docs[:8]
 
     if not docs:
         yield "Bu bilgi PDF'lerde bulunamadı."
@@ -557,10 +628,12 @@ Cevap:
             )
 
 
-def list_indexed_pdfs(vectorstore):
+def list_indexed_pdfs(vectorstore, user_id=None, include_public=True):
     """
     ChromaDB içinde kayıtlı PDF isimlerini listeler.
+    user_id verilirse sadece o kullanıcının private PDF'leri ve public PDF'ler döner.
     """
+
     if vectorstore is None:
         return []
 
@@ -568,17 +641,42 @@ def list_indexed_pdfs(vectorstore):
         data = vectorstore.get(include=["metadatas"])
         metadatas = data.get("metadatas", []) or []
 
-        pdf_names = sorted(
-            {
-                metadata.get("source") or metadata.get("file_name")
-                for metadata in metadatas
-                if metadata and (metadata.get("source") or metadata.get("file_name"))
-            }
-        )
+        pdf_names = set()
 
-        return pdf_names
+        for metadata in metadatas:
+            if not metadata:
+                continue
+
+            file_name = metadata.get("source") or metadata.get("file_name")
+            metadata_user_id = metadata.get("user_id")
+            visibility = metadata.get("visibility", "private")
+
+            if not file_name:
+                continue
+
+             # Streamlit eski kullanım: user_id verilmezse her şeyi göster.
+            if user_id is None:
+                pdf_names.add(file_name)
+                continue
+
+            # Kullanıcının kendi PDF'i  
+            if metadata_user_id == user_id:
+                pdf_names.add(file_name)
+                continue
+            
+            # Public PDF
+            if include_public and visibility == "public":
+                pdf_names.add(file_name)
+                continue
+
+            # Eski metadata'sız kayıtlar geçici olarak görünsün
+            if metadata_user_id is None:
+                pdf_names.add(file_name)
+
+        return sorted(pdf_names)
 
     except Exception:
+        logger.exception("PDF listelenirken hata oluştu.")
         return []
 
 
