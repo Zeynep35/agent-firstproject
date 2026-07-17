@@ -1,33 +1,40 @@
 # AgentDemo V3.0 - Local LLM Multi PDF Agentic RAG
 
-AgentDemo V3.0, local LLM kullanarak çalışan, çoklu PDF okuyabilen, OCR destekli, gerçek zamanlı streaming response verebilen ve Agentic RAG mimarisiyle belge sorgulama yapabilen yapay zeka agent uygulamasıdır.
+AgentDemo V3.0; local LLM, çoklu PDF RAG, OCR, Vision, FastAPI, JWT authentication, kullanıcı bazlı belge izolasyonu, public/private knowledge ayrımı, performans metrikleri ve kullanıcı bazlı long-term memory özelliklerini bir araya getiren uçtan uca bir yapay zeka agent uygulamasıdır.
 
-Projede Ollama üzerinden local model çalıştırılır, Streamlit ile kullanıcı arayüzü sağlanır, LangGraph ile SQLite tabanlı kalıcı konuşma hafızası kullanılır ve ChromaDB ile PDF belgeleri üzerinde RAG sistemi uygulanır.
-
-Uygulama; metin tabanlı PDF dosyalarını okuyabilir, taranmış/görsel PDF dosyalarındaki yazıları OCR ile çıkarabilir, aynı PDF dosyasının tekrar eklenmesini engelleyebilir ve eklenen PDF dosyalarını sidebar üzerinden listeleyip silebilir.
-
-Ayrıca gerçek web search entegrasyonu, Docker desteği, GitHub Actions ile otomatik Docker image build süreci ve canlı akan streaming response sistemi projeye eklenmiştir.
+Proje; Ollama üzerinden local model çalıştırır, Streamlit ile kullanıcı arayüzü sunar, FastAPI ile REST API sağlar, ChromaDB ile PDF belgeleri üzerinde RAG sistemi kurar, SQLite ile kalıcı hafıza tutar ve kullanıcı bazlı erişim kontrolü uygular.
 
 ---
 
-## Durum
+## Final Durum
 
-Bu proje, yapay zeka agent mimarisini öğrenmek ve gerçek bir local AI uygulaması geliştirmek amacıyla oluşturulmuştur.
+AgentDemo V3.0 artık çalışan bir local AI agent uygulamasıdır.
 
-Uygulama Ne Yapabilir?
+Uygulama şunları yapabilir:
 
-AgentDemo V3.0 ile kullanıcılar PDF dosyaları yükleyebilir, belgeler hakkında soru sorabilir, taranmış PDF dosyalarındaki yazıları OCR ile okuyabilir ve cevapları gerçek zamanlı streaming olarak alabilir.
-
-Sistem aynı PDF dosyasının tekrar eklenmesini engeller. Eklenen PDF dosyaları sidebar üzerinden listelenebilir, tek tek silinebilir veya tüm PDF veritabanı temizlenebilir.
-
-PDF dışındaki sorularda agent normal local LLM cevabı üretebilir. Güncel bilgi gerektiren sorular için gerçek web search entegrasyonu kullanılabilir.
-
-Proje Docker ile çalıştırılabilir ve GitHub Actions üzerinden otomatik Docker image build süreci desteklenir.
+* Çoklu PDF yükleyebilir
+* PDF metinlerini okuyabilir
+* Taranmış/görsel PDF sayfalarından OCR ile metin çıkarabilir
+* Vision model ile PDF sayfalarını görsel olarak yorumlayabilir
+* PDF parçalarını ChromaDB içine kalıcı olarak kaydedebilir
+* Aynı PDF dosyasının tekrar işlenmesini engelleyebilir
+* PDF belgeleri üzerinde kaynaklı RAG cevapları üretebilir
+* Cevaplarda PDF adı, sayfa numarası ve içerik türü gösterebilir
+* RAG performans metrikleri döndürebilir
+* Streamlit arayüzü üzerinden chat, PDF yükleme, PDF yönetimi ve export işlemleri yapabilir
+* FastAPI üzerinden Swagger dokümantasyonu ile API endpointleri sunabilir
+* API Key ve JWT Bearer Token authentication destekler
+* Token üzerinden `user_id` belirleyebilir
+* Kullanıcı bazlı private/public PDF erişimi sağlayabilir
+* Kullanıcı bazlı long-term memory tutabilir
+* Memory kayıtlarını ekleyebilir, listeleyebilir ve silebilir
+* Basit kişisel memory sorularını LLM'e gitmeden doğrudan cevaplayabilir
+* Docker ile çalıştırılabilir
+* GitHub Actions ile otomatik Docker image build sürecini destekler
 
 ---
 
-## Demo Görseli
-
+## Demo Görselleri
 
 <img src="screenshots/rag-demo.jpg" width="800">
 <img src="screenshots/yz1.jpg" width="800">
@@ -35,25 +42,12 @@ Proje Docker ile çalıştırılabilir ve GitHub Actions üzerinden otomatik Doc
 <img src="screenshots/yz3.jpg" width="800">
 <img src="screenshots/yz4.jpg" width="800">
 <img src="screenshots/yz5.jpg" width="800">
-
-
-## Version 2.0 Özeti
-
-Version 2.0 ile tamamlanan ana özellikler:
-
-* Modüler Python proje yapısı
-* Çoklu PDF yükleme desteği
-* ChromaDB tabanlı kalıcı vector database
-* Ollama Embedding desteği
-* Agentic RAG akışı
-* Router tabanlı yönlendirme
-* SQLite tabanlı kalıcı konuşma hafızası
-* Thread ID ile bağımsız sohbet hafızaları
-* Kaynak sayfa gösterimli PDF cevapları
-* Chat export sistemi
-* Log görüntüleme paneli
-* Hata yönetimi
-* Cevap süresi takibi
+<img src="screenshots/yz6.jpg" width="800">
+<img src="screenshots/yz7.jpg" width="800">
+<img src="screenshots/yz8.jpg" width="800">
+<img src="screenshots/yz9.jpg" width="800">
+<img src="screenshots/yz10.jpg" width="800">
+<img src="screenshots/yz11.jpg" width="800">
 
 ---
 
@@ -61,47 +55,73 @@ Version 2.0 ile tamamlanan ana özellikler:
 
 * Python
 * Streamlit
+* FastAPI
+* Swagger / OpenAPI
 * LangChain
 * LangGraph
 * Ollama
 * ChromaDB
 * SQLite
 * PyPDFLoader
+* PyMuPDF / fitz
+* Tesseract OCR
+* pytesseract
+* Pillow
 * RecursiveCharacterTextSplitter
 * OllamaEmbeddings
 * Python Logging
-* Mistral
+* Docker
+* GitHub Actions
+* JWT / PyJWT
+* API Key Authentication
 * nomic-embed-text
+* qwen2.5:1.5b
+* qwen3-vl:2b
 
 ---
 
 ## Proje Mimarisi
 
 ```text
-Kullanıcı Mesajı
-        │
-        ▼
-Streamlit Arayüzü
-        │
-        ▼
-Router
-        │
- ┌──────┼──────────────┐
- │      │              │
- ▼      ▼              ▼
-Tool   Agentic RAG    Agent
- │        │             │
- ▼        ▼             ▼
-Demo   ChromaDB     LangGraph
-Tool      │             │
-          ▼             ▼
-       PDF Context   SQLite Memory
-          │
-          ▼
-       Ollama LLM
-          │
-          ▼
-        Cevap
+Kullanıcı
+   │
+   ├── Streamlit UI
+   │       │
+   │       ├── Chat
+   │       ├── PDF Upload
+   │       ├── PDF Yönetimi
+   │       ├── Memory Yönetimi
+   │       └── Export / Debug
+   │
+   └── FastAPI REST API
+           │
+           ├── API Key Authentication
+           ├── JWT Bearer Token
+           ├── user_id
+           └── Swagger Docs
+
+user_id
+   │
+   ├── Private/Public PDF Erişimi
+   ├── Long-Term Memory
+   └── RAG Filtreleme
+
+PDF Upload
+   │
+   ├── Text Extraction
+   ├── OCR Extraction
+   ├── Vision Description
+   ├── Duplicate Check
+   └── ChromaDB
+
+RAG Query
+   │
+   ├── Chroma Similarity Search
+   ├── user_id + visibility Filter
+   ├── Context Builder
+   ├── Ollama LLM
+   ├── Sources
+   └── Metrics
 ```
 
 ---
@@ -112,27 +132,39 @@ Tool      │             │
 agent-firstproject/
 │
 ├── app.py
+├── api.py
 ├── agent_core.py
 ├── agentic_rag.py
 ├── rag.py
+├── vision.py
+├── memory_store.py
 ├── router.py
 ├── tools.py
+├── web_search.py
 ├── logger_config.py
 ├── requirements.txt
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
 ├── README.md
 │
-├── memory.sqlite
-├── memory.sqlite-shm
-├── memory.sqlite-wal
-├── agent.log
+├── screenshots/
+│   ├── rag-demo.jpg
+│   ├── yz1.jpg
+│   ├── yz2.jpg
+│   ├── yz3.jpg
+│   ├── yz4.jpg
+│   └── yz5.jpg
 │
-├── uploads/
-├── chroma_db/
-└── screenshots/
-    └── rag-demo.jpg
-    └── yz1.jpg
-    └── yz2.jpg
+├── uploads/              # runtime
+├── chroma_db/            # runtime
+├── memory.sqlite         # runtime
+├── memory.sqlite-shm     # runtime
+├── memory.sqlite-wal     # runtime
+└── agent.log             # runtime
 ```
+
+Runtime dosyaları GitHub'a gönderilmemelidir.
 
 ---
 
@@ -148,10 +180,35 @@ Görevleri:
 * PDF yükleme alanını gösterir
 * Sidebar ayarlarını yönetir
 * Thread ID seçimini sağlar
+* Kullanıcı ID seçimini sağlar
+* PDF visibility seçimini sağlar
 * Mesaj geçmişini ekranda tutar
 * Router'a kullanıcı mesajını gönderir
+* RAG cevaplarını gösterir
 * Logları gösterir
 * Chat export işlemlerini yönetir
+* PDF yönetim panelini sunar
+* Memory yönetim panelini sunar
+
+---
+
+### `api.py`
+
+FastAPI REST API katmanını sağlar.
+
+Görevleri:
+
+* Swagger dokümantasyonu sunar
+* `/health` endpointini sağlar
+* `/login` ile JWT token üretir
+* API Key kontrolü yapar
+* Bearer token authentication uygular
+* `/chat` üzerinden local LLM chat sağlar
+* `/rag-chat` üzerinden PDF RAG sorgusu yapar
+* `/upload-pdf` üzerinden PDF yükler
+* `/pdfs` üzerinden kullanıcıya görünür PDF listesini döndürür
+* `/memory` endpointleri ile kullanıcı bazlı memory yönetir
+* RAG cevaplarında sources ve metrics döndürür
 
 ---
 
@@ -162,25 +219,63 @@ LLM ve LangGraph agent yapısını oluşturur.
 Görevleri:
 
 * Ollama üzerinden local LLM başlatır
-* Mistral modelini kullanır
+* `.env` üzerinden model ayarlarını okur
+* Local text model seçimini yönetir
+* Fallback model mantığını destekler
 * SQLite checkpointer oluşturur
-* Kalıcı agent hafızasını yönetir
-* Thread ID bazlı konuşma geçmişi sağlar
+* Thread ID bazlı konuşma hafızasını yönetir
 
 ---
 
 ### `rag.py`
 
-PDF dosyalarının okunması ve ChromaDB’ye aktarılmasından sorumludur.
+PDF dosyalarının okunması, ChromaDB’ye aktarılması ve RAG cevaplarının üretilmesinden sorumludur.
 
 Görevleri:
 
 * PDF dosyalarını okur
-* PDF sayfalarını metne çevirir
+* PDF metnini çıkarır
+* Taranmış/görsel PDF sayfalarında OCR çalıştırır
+* Vision modeli ile PDF sayfalarını görsel olarak yorumlar
+* PDF dosyaları için hash üretir
+* Duplicate PDF yüklemeyi engeller
 * Metni chunklara böler
 * OllamaEmbeddings ile embedding üretir
 * ChromaDB’ye kayıt yapar
 * Var olan vectorstore’u tekrar yükler
+* Kullanıcı bazlı belge filtrelemesi yapar
+* Public/private knowledge ayrımı uygular
+* RAG context oluşturur
+* Kaynaklı cevap üretir
+* RAG performans metriklerini hesaplar
+
+---
+
+### `vision.py`
+
+Görsel ve PDF sayfası yorumlama tarafını yönetir.
+
+Görevleri:
+
+* PDF sayfasından üretilen görseli vision modele gönderir
+* Görseldeki karakter, nesne, renk, sahne ve okunabilir yazıları yorumlar
+* Vision çıktısını RAG için kullanılabilir metin haline getirir
+* Görsel açıklamalarını PDF chunk metadata’sı ile birlikte ChromaDB’ye eklenebilir hale getirir
+
+---
+
+### `memory_store.py`
+
+Kullanıcı bazlı long-term memory sistemini yönetir.
+
+Görevleri:
+
+* SQLite memory tablosu oluşturur
+* Kullanıcıya özel memory kaydeder
+* Memory kayıtlarını listeler
+* Memory kayıtlarını siler
+* Kullanıcının memory context’ini oluşturur
+* JWT token’dan gelen `user_id` ile memory izolasyonu sağlar
 
 ---
 
@@ -207,11 +302,8 @@ Yönlendirme örnekleri:
 
 ```text
 pdf / belge / doküman / yüklediğim → Agentic RAG
-
 hava → Hava durumu demo tool
-
 eksi / çıkar → Basit matematik demo tool
-
 diğer tüm sorular → Agent
 ```
 
@@ -232,9 +324,12 @@ Loglanan bilgiler:
 * Kullanıcı mesajları
 * Router kararları
 * PDF yükleme işlemleri
+* OCR işlemleri
+* Vision işlemleri
 * RAG aramaları
 * Agentic RAG adımları
 * Ollama istekleri
+* RAG performans metrikleri
 * Cevap süreleri
 * Hatalar
 
@@ -248,10 +343,16 @@ PDF yüklendiğinde sistem şu işlemleri yapar:
 PDF Yüklenir
       │
       ▼
-PyPDFLoader
+Hash / Duplicate Kontrolü
       │
       ▼
-Sayfalar Metne Çevrilir
+Text Extraction
+      │
+      ├── PyPDFLoader
+      │
+      ├── OCR / Tesseract
+      │
+      └── Vision Description
       │
       ▼
 RecursiveCharacterTextSplitter
@@ -275,22 +376,22 @@ Kullanıcı soru sorduğunda:
 Kullanıcı Sorusu
       │
       ▼
-Router
+user_id / visibility filtresi
       │
       ▼
-Agentic RAG
-      │
-      ▼
-Similarity Search
+ChromaDB Similarity Search
       │
       ▼
 İlgili PDF Chunk'ları
       │
       ▼
-LLM Context
+RAG Context
       │
       ▼
-Kaynaklı Cevap
+Ollama LLM
+      │
+      ▼
+Cevap + Sources + Metrics
 ```
 
 ---
@@ -326,31 +427,165 @@ Bu sayede sistem daha kontrollü, daha güvenli ve daha açıklanabilir cevaplar
 
 ## Çoklu PDF Desteği
 
-Version 2.0 ile çoklu PDF desteği eklenmiştir.
-
 Kullanıcı aynı anda birden fazla PDF yükleyebilir.
 
 Sistem her PDF için:
 
 * Dosya adını kaydeder
+* Dosya hash bilgisini tutar
+* Dosya boyutunu metadata olarak saklar
+* Kullanıcı ID bilgisini metadata olarak saklar
+* Visibility bilgisini metadata olarak saklar
 * Sayfa bilgisini metadata olarak tutar
+* Extraction type bilgisini metadata olarak tutar
 * Her sayfayı chunklara böler
 * Chunkları ChromaDB’ye ekler
-* Cevap verirken hangi PDF ve sayfadan yararlandığını gösterir
+* Cevap verirken hangi PDF, sayfa ve içerik türünden yararlandığını gösterir
 
 Örnek kaynak çıktısı:
 
 ```text
 Kaynaklar:
-- proje_deneme_pdf.pdf / Sayfa 1
-- proje_deneme_pdf.pdf / Sayfa 2
+- sirineocrdenemesi.pdf / Sayfa 1 / vision
+- proje_deneme_pdf.pdf / Sayfa 2 / text
+- taranmis_belge.pdf / Sayfa 1 / ocr
 ```
 
 ---
 
-## Persistent Memory
+## OCR ve Vision Desteği
 
-Projede LangGraph SQLite Checkpointer kullanılmaktadır.
+AgentDemo V3.0 hem normal PDF metni hem de görsel/taranmış PDF içerikleriyle çalışabilir.
+
+Desteklenen okuma türleri:
+
+```text
+text    → PDF içinde seçilebilir metin varsa
+ocr     → PDF sayfası görsel/taranmış içerikse
+vision  → PDF sayfası görsel olarak yorumlanacaksa
+```
+
+OCR tarafında Tesseract kullanılır.
+
+Vision tarafında Ollama üzerinden vision model kullanılır.
+
+Bu sayede sistem:
+
+* Normal PDF metinlerini okuyabilir
+* Görsel/taranmış PDF sayfalarından metin çıkarabilir
+* PDF sayfasındaki karakter, nesne, renk ve sahne bilgisini yorumlayabilir
+* Görsel açıklamasını RAG context içinde kullanabilir
+
+---
+
+## Kullanıcı Bazlı Belge İzolasyonu
+
+AgentDemo V3.0 kullanıcı bazlı belge erişimi destekler.
+
+Her PDF chunk metadata’sında şu alanlar tutulur:
+
+```text
+user_id
+visibility
+source
+file_name
+file_hash
+file_size
+page
+extraction_type
+```
+
+Erişim mantığı:
+
+```text
+private PDF → sadece aynı user_id görebilir
+public PDF  → tüm kullanıcılar görebilir
+başkasının private PDF'i → RAG cevabına dahil edilmez
+```
+
+Bu sayede farklı kullanıcıların belgeleri birbirine karışmaz.
+
+---
+
+## Long-Term Memory
+
+AgentDemo V3.0 kullanıcı bazlı long-term memory destekler.
+
+Memory sistemi SQLite üzerinde çalışır.
+
+Memory kayıtları şu alanları içerir:
+
+```text
+id
+user_id
+content
+kind
+created_at
+```
+
+Desteklenen işlemler:
+
+* Memory ekleme
+* Memory listeleme
+* Memory silme
+* Tüm memory kayıtlarını temizleme
+* Chat cevaplarında memory context kullanma
+* Basit kişisel memory sorularında doğrudan cevap üretme
+
+Örnek:
+
+```text
+Memory:
+yapay zekayı çok seviyorum
+
+Kullanıcı:
+Ben neyi seviyorum?
+
+Cevap:
+Yapay zekayı seviyorsun.
+```
+
+Memory kayıtları kullanıcı bazlıdır. Bir kullanıcının memory kayıtları başka kullanıcıların cevaplarına karışmaz.
+
+---
+
+## RAG Performans Metrikleri
+
+`/rag-chat` endpointi cevapla birlikte performans metrikleri döndürür.
+
+Örnek metrics çıktısı:
+
+```json
+{
+  "retrieval_ms": 3239,
+  "context_ms": 0,
+  "llm_ms": 14056,
+  "total_ms": 17295,
+  "docs_count": 1,
+  "context_chars": 226,
+  "source_types": {
+    "vision": 1
+  }
+}
+```
+
+Alanların anlamı:
+
+```text
+retrieval_ms   → ChromaDB arama süresi
+context_ms     → RAG context hazırlama süresi
+llm_ms         → LLM cevap üretme süresi
+total_ms       → toplam işlem süresi
+docs_count     → kullanılan chunk sayısı
+context_chars  → LLM'e verilen context uzunluğu
+source_types   → text / ocr / vision kaynak dağılımı
+```
+
+---
+
+## Persistent Conversation Memory
+
+Projede LangGraph SQLite Checkpointer da kullanılmaktadır.
 
 ```python
 conn = sqlite3.connect(
@@ -363,10 +598,10 @@ checkpointer = SqliteSaver(conn)
 
 Bu sayede:
 
-* Uygulama kapatılsa bile hafıza kaybolmaz
-* Aynı Thread ID ile konuşma geçmişi devam eder
+* Uygulama kapatılsa bile thread bazlı konuşma hafızası korunabilir
+* Aynı Thread ID ile konuşma geçmişi devam edebilir
 * Her sohbet ayrı hafızaya sahip olabilir
-* Agent önceki konuşmaları hatırlayabilir
+* Agent önceki konuşmaları kullanabilir
 
 SQLite tarafından oluşturulan dosyalar:
 
@@ -390,7 +625,7 @@ Bu dosyaların oluşması normaldir.
 
 ## Thread Sistemi
 
-Her konuşma bir Thread ID ile yönetilir.
+Her konuşma bir Thread ID ile yönetilebilir.
 
 Örnek Thread ID değerleri:
 
@@ -412,7 +647,7 @@ Bu sayede farklı sohbet oturumları birbirine karışmaz.
 
 ## Chat Export
 
-Version 2.0 ile chat export sistemi eklenmiştir.
+Chat export sistemi desteklenir.
 
 Desteklenen formatlar:
 
@@ -432,30 +667,101 @@ Export edilen veri:
 
 ---
 
-## Logging Sistemi
+## REST API
 
-Projede Python Logging kullanılmaktadır.
+API çalıştırma:
 
-Log dosyası:
-
-```text
-agent.log
+```bash
+python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Örnek log çıktısı:
+Swagger dokümantasyonu:
 
 ```text
-Kullanıcı mesajı: sana yüklediğim pdf ne hakkında
-Thread ID: zeynep_1
-Router: Agentic RAG seçildi.
-Agentic RAG: İlk arama başlatıldı.
-HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
-Agentic RAG: Final cevap üretiliyor.
-HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-Cevap süresi: 82.85 saniye
+http://127.0.0.1:8000/docs
 ```
 
-Loglar sayesinde sistemin hangi adımda çalıştığı veya hata verdiği takip edilebilir.
+### Temel Endpointler
+
+```text
+GET    /health
+POST   /login
+POST   /chat
+GET    /pdfs
+POST   /rag-chat
+POST   /upload-pdf
+DELETE /pdfs
+POST   /clear-pdfs
+POST   /chat/stream
+POST   /memory
+GET    /memory
+DELETE /memory/{memory_id}
+DELETE /memory
+```
+
+### Authentication
+
+API iki güvenlik yaklaşımını destekler:
+
+```text
+X-API-Key header
+Authorization: Bearer <JWT_TOKEN>
+```
+
+API Key örneği:
+
+```http
+X-API-Key: your-api-key
+```
+
+JWT örneği:
+
+```http
+Authorization: Bearer eyJhbGciOi...
+```
+
+JWT token `/login` endpointinden alınır.
+
+---
+
+## `.env` Örneği
+
+Gerçek `.env` dosyası GitHub’a gönderilmemelidir.
+
+Örnek yapı:
+
+```env
+TAVILY_API_KEY=your_tavily_key
+
+AGENTDEMO_API_KEY=your_api_key
+
+JWT_SECRET_KEY=your_long_jwt_secret
+JWT_EXPIRE_MINUTES=120
+
+DEMO_USERNAME=zeynep
+DEMO_PASSWORD=123456
+
+TEXT_MODEL=qwen2.5:1.5b
+TEXT_MODEL_FALLBACKS=llama3.2:1b,gemma2:2b,mistral:latest
+EMBEDDING_MODEL=nomic-embed-text
+VISION_MODEL=qwen3-vl:2b
+
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_NUM_CTX=768
+OLLAMA_NUM_PREDICT=100
+OLLAMA_KEEP_ALIVE=0
+
+RAG_CHUNK_SIZE=700
+RAG_CHUNK_OVERLAP=80
+RAG_SEARCH_K=6
+RAG_FINAL_K=2
+RAG_MAX_CONTEXT_CHARS=1500
+
+ALWAYS_RUN_OCR=true
+USE_VISION_FALLBACK=false
+
+MEMORY_DB_PATH=memory.sqlite
+```
 
 ---
 
@@ -467,59 +773,30 @@ Gerekli paketleri yükleyin:
 pip install -r requirements.txt
 ```
 
-Alternatif olarak tek tek kurulum:
+Tesseract OCR kurulmalıdır.
 
-```bash
-pip install streamlit
-pip install langchain
-pip install langgraph
-pip install langgraph-checkpoint-sqlite
-pip install langchain-ollama
-pip install langchain-community
-pip install langchain-text-splitters
-pip install langchain-chroma
-pip install chromadb
-pip install pypdf
+Windows için örnek:
+
+```powershell
+winget install -e --id UB-Mannheim.TesseractOCR
 ```
 
----
-
-## requirements.txt
-
-```txt
-streamlit
-langchain
-langgraph
-langgraph-checkpoint-sqlite
-langchain-ollama
-langchain-community
-langchain-text-splitters
-langchain-chroma
-chromadb
-pypdf
-```
-
----
-
-## Ollama Modelleri
-
-Bu proje local model olarak Ollama kullanır.
-
-Gerekli modeller:
+Ollama modellerini indirin:
 
 ```bash
-ollama pull mistral
+ollama pull qwen2.5:1.5b
 ollama pull nomic-embed-text
+ollama pull qwen3-vl:2b
 ```
 
-Kullanılan modeller:
+Fallback model kullanmak isterseniz:
 
-```text
-mistral:latest       → Cevap üretimi
-nomic-embed-text     → Embedding üretimi
+```bash
+ollama pull llama3.2:1b
+ollama pull gemma2:2b
 ```
 
-Ollama’nın çalıştığından emin olmak için:
+Ollama’nın çalıştığından emin olun:
 
 ```bash
 ollama list
@@ -529,40 +806,34 @@ ollama list
 
 ## Çalıştırma
 
-Projeyi çalıştırmak için:
+Streamlit arayüzü:
 
 ```bash
 streamlit run app.py
 ```
 
-Uygulama açıldıktan sonra:
+FastAPI REST API:
 
-1. PDF dosyalarını yükle
-2. “PDF’leri işle” butonuna bas
-3. Sorunu chat ekranına yaz
-4. Kaynaklı cevabı görüntüle
+```bash
+python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Docker:
+
+```bash
+docker build -t agentdemo-v3 .
+docker run -p 8501:8501 --env-file .env agentdemo-v3
+```
+
+Docker ile host Ollama kullanılıyorsa:
+
+```bash
+docker run -p 8501:8501 --env-file .env -e OLLAMA_BASE_URL=http://host.docker.internal:11434 agentdemo-v3
+```
 
 ---
 
 ## Örnek Kullanım
-
-### Hafıza Testi
-
-Kullanıcı:
-
-```text
-Benim adım Zeynep.
-```
-
-Sonra:
-
-```text
-Benim adım ne?
-```
-
-Sistem aynı Thread ID içinde konuşma geçmişini kullanarak cevap verebilir.
-
----
 
 ### PDF RAG Testi
 
@@ -588,6 +859,55 @@ Sistem ilgili sayfaları bulur ve kaynak göstererek cevap verir.
 
 ---
 
+### Vision RAG Testi
+
+Vision açık şekilde PDF yükle.
+
+Soru sor:
+
+```text
+Bu PDF'in 1. sayfasındaki görseli 2 cümlede açıkla.
+```
+
+Örnek cevap:
+
+```text
+PDF’in 1. sayfasında ana olarak bir Smurf karakteri görünüyor. Okunabilir yazı tespit edilmemiş.
+```
+
+Örnek kaynak:
+
+```text
+sirineocrdenemesi.pdf / Sayfa 1 / vision
+```
+
+---
+
+### Long-Term Memory Testi
+
+Memory ekle:
+
+```json
+{
+  "content": "yapay zekayı çok seviyorum",
+  "kind": "preference"
+}
+```
+
+Soru sor:
+
+```text
+Ben neyi seviyorum?
+```
+
+Beklenen cevap:
+
+```text
+Yapay zekayı seviyorsun.
+```
+
+---
+
 ### Agentic RAG Testi
 
 PDF içinde olmayan bir bilgi sor:
@@ -606,39 +926,55 @@ Bu davranış sistemin uydurma yapmadığını gösterir.
 
 ---
 
-## Mevcut Demo Toollar
+## Logging Sistemi
 
-Projede basit router testleri için bazı demo tool mantıkları bulunmaktadır.
+Projede Python Logging kullanılmaktadır.
 
-Mevcut demo yönlendirmeler:
+Log dosyası:
 
 ```text
-hava → Hava durumu demo cevabı
-
-eksi / çıkar → Basit çıkarma yönlendirmesi
-
-internet / web / ara → Demo web search cevabı
+agent.log
 ```
 
-Not: Web search şu an gerçek internet araması yapmamaktadır.
+Örnek log çıktısı:
+
+```text
+Kullanıcı mesajı: sana yüklediğim pdf ne hakkında
+Thread ID: zeynep_1
+Router: Agentic RAG seçildi.
+Agentic RAG: İlk arama başlatıldı.
+HTTP Request: POST http://127.0.0.1:11434/api/embed "HTTP/1.1 200 OK"
+Agentic RAG: Final cevap üretiliyor.
+HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+RAG metrics | user_id=zeynep | docs=1 | context_chars=226 | retrieval_ms=3239 | llm_ms=14056 | total_ms=17295
+Cevap süresi: 17.29 saniye
+```
+
+Loglar sayesinde sistemin hangi adımda çalıştığı veya hata verdiği takip edilebilir.
 
 ---
 
-## REST API Çalıştırma
+## Git Ignore
 
+Aşağıdaki dosya ve klasörler GitHub’a gönderilmemelidir:
 
-```bash
-python -m uvicorn api:app --host 127.0.0.1 --port 8000 --reload
+```gitignore
+.env
+agent.log
+memory.sqlite
+memory.sqlite-shm
+memory.sqlite-wal
+chroma_db/
+uploads/
+__pycache__/
+*.pyc
+```
 
-Swagger dokümantasyonu:
+---
 
-http://127.0.0.1:8000/docs  '''
+## Version Geçmişi
 
-
-
-## Version Roadmap
-
-## Version 1.0
+### Version 1.0
 
 * [x] Streamlit UI
 * [x] LangChain Agent
@@ -651,7 +987,7 @@ http://127.0.0.1:8000/docs  '''
 
 ---
 
-## Version 2.0
+### Version 2.0
 
 * [x] Modüler mimari
 * [x] Çoklu PDF desteği
@@ -668,7 +1004,7 @@ http://127.0.0.1:8000/docs  '''
 
 ---
 
-## Version 3.0 Planı
+### Version 3.0 Final
 
 * [x] Gerçek Web Search entegrasyonu
 * [x] OCR desteği
@@ -677,7 +1013,12 @@ http://127.0.0.1:8000/docs  '''
 * [x] PDF duplicate engelleme
 * [x] PDF listeleme paneli
 * [x] PDF silme sistemi
-* [ ] Gelişmiş long-term memory
+* [x] Kullanıcı bazlı long-term memory
+* [x] SQLite tabanlı memory store
+* [x] JWT token üzerinden memory izolasyonu
+* [x] `/memory` kayıt listeleme silme endpointleri
+* [x] `/chat` cevaplarında kullanıcı hafızası kullanımı
+* [x] Basit memory sorularında direct memory answer sistemi
 * [x] Gerçek streaming response
 * [x] REST API
 * [x] FastAPI kurulumu
@@ -688,13 +1029,12 @@ http://127.0.0.1:8000/docs  '''
 * [x] API üzerinden PDF RAG sorgulama
 * [x] API üzerinden OCR destekli PDF işleme
 * [x] API üzerinden PDF yükleme
-* [x] API üzerinden OCR destekli PDF işleme
 * [x] API üzerinden Vision destekli PDF görsel yorumlama
 * [x] API üzerinden PDF duplicate engelleme
 * [x] API üzerinden seçili PDF silme
 * [x] API üzerinden tüm PDF veritabanını temizleme
 * [x] Docker desteği
-* [x] Github actions
+* [x] GitHub Actions
 * [x] Authentication sistemi
 * [x] API Key Authentication
 * [x] `X-API-Key` header kontrolü
@@ -711,36 +1051,39 @@ http://127.0.0.1:8000/docs  '''
 * [x] Token üzerinden `user_id` belirleme
 * [x] PDF upload sırasında kullanıcıyı token’dan alma
 * [x] RAG sorgularında token kullanıcısına göre belge filtreleme
-* [ ] Daha hızlı model ve embedding optimizasyonu
+* [x] Daha hızlı model ve embedding optimizasyonu
+* [x] RAG context karakter limiti
+* [x] RAG source type metrics
+* [x] Duplicate RAG chunk temizleme
+* [x] Direct memory answer sistemi
 
 ---
 
 ## Mevcut Sınırlamalar
 
-* Local model kullanıldığı için cevap süresi uzun olabilir
-* CPU üzerinde çalışan modeller yavaş cevap verebilir
-* Mistral bazı Türkçe cevaplarda eksik veya hatalı ifade kurabilir
-* OCR desteği olmadığı için görsel/taranmış PDF’lerde başarı düşer
-* Aynı PDF tekrar işlenirse duplicate kayıt oluşabilir
-* Web search şu an demo modundadır
-* Tool calling tamamen modele bırakılmamış, router ile kontrol edilmiştir
-* Gerçek kullanıcı yönetimi ve authentication henüz yoktur
+* Local model kullanıldığı için cevap süresi donanıma göre değişebilir.
+* Küçük local modeller bazı cevaplarda promptu tam takip etmeyebilir.
+* Vision model kalitesi kullanılan modele ve PDF sayfasının netliğine bağlıdır.
+* OCR başarısı görsel kalitesi, font, sayfa çözünürlüğü ve Tesseract dil paketlerine bağlıdır.
+* Aynı anda text model, embedding model ve vision model çalıştığında RAM/VRAM kullanımı artabilir.
+* Demo kullanıcı sistemi `.env` üzerinden tanımlanan kullanıcı adı/şifre ile çalışır.
+* Production ortamı için gerçek kullanıcı kayıt sistemi, şifre hashleme, rate limit ve admin panel eklenebilir.
+* Local Ollama kullanıldığı için model dosyaları Docker image içine gömülü değildir; Ollama host üzerinde çalışmalıdır.
 
 ---
 
-## Neden FAISS Kullanılmadı?
-
-Version 2.0’da FAISS entegrasyonu yapılmamıştır.
+## Neden ChromaDB Kullanıldı?
 
 Bu projede ChromaDB tercih edilmiştir çünkü:
 
-* Metadata yönetimi daha kolaydır
-* PDF kaynak ve sayfa bilgisiyle çalışmak daha rahattır
-* Kalıcı kayıt yapısı daha uygundur
-* Gelecekte kullanıcı bazlı filtreleme için daha düzenlidir
-* Çoklu PDF ve kaynak gösterimi için daha pratik bir yapı sunar
+* Metadata yönetimi kolaydır
+* PDF kaynak ve sayfa bilgisiyle çalışmak rahattır
+* Kalıcı kayıt yapısı uygundur
+* Kullanıcı bazlı filtreleme için düzenlidir
+* Public/private knowledge ayrımı için metadata filtreleri kullanılabilir
+* Çoklu PDF ve kaynak gösterimi için pratik bir yapı sunar
 
-FAISS ileride alternatif vector backend olarak eklenebilir, ancak Version 2.0 için ana vector database ChromaDB olarak bırakılmıştır.
+FAISS ileride alternatif vector backend olarak eklenebilir, ancak AgentDemo V3.0 için ana vector database ChromaDB olarak bırakılmıştır.
 
 ---
 
@@ -755,9 +1098,13 @@ Bu projenin amacı:
 * RAG mimarisini uygulamak
 * Agentic RAG akışını deneyimlemek
 * Streamlit ile AI arayüzü geliştirmek
+* FastAPI ile AI REST API geliştirmek
 * SQLite ile kalıcı hafıza kullanmak
 * ChromaDB ile vector database mantığını öğrenmek
-* Modüler Python proje yapısı kurmak
+* OCR ve Vision destekli PDF işleme denemek
+* JWT ve API Key authentication mantığını uygulamak
+* Kullanıcı bazlı belge ve memory izolasyonu kurmak
+* Modüler Python proje yapısı oluşturmak
 
 ---
 
@@ -770,17 +1117,29 @@ Bu proje geliştirilirken aşağıdaki konular üzerinde çalışıldı:
 * LangGraph kullanımı
 * Checkpointer mantığı
 * SQLite Memory
+* Kullanıcı bazlı long-term memory
 * Thread ID yönetimi
 * RAG mimarisi
 * Agentic RAG yaklaşımı
 * Embedding sistemleri
 * ChromaDB
 * PDF chunking
+* OCR
+* Vision model kullanımı
 * Metadata yönetimi
+* Kullanıcı bazlı filtreleme
+* Public/private knowledge ayrımı
+* FastAPI
+* Swagger
+* JWT authentication
+* API Key authentication
 * Router tasarımı
 * Logging
+* Metrics toplama
 * Streamlit chat arayüzü
 * Chat export
+* Docker
+* GitHub Actions
 * Modüler Python proje yapısı
 * Local LLM çalışma mantığı
 * Ollama model yönetimi
@@ -789,6 +1148,8 @@ Bu proje geliştirilirken aşağıdaki konular üzerinde çalışıldı:
 
 ## Kısa Açıklama
 
-AgentDemo V2; Ollama, LangChain, LangGraph, Streamlit, ChromaDB ve SQLite kullanarak geliştirilmiş local çalışan bir Agentic RAG uygulamasıdır.
+AgentDemo V3.0; Ollama, LangChain, LangGraph, FastAPI, Streamlit, ChromaDB ve SQLite kullanılarak geliştirilmiş local çalışan bir Agentic RAG uygulamasıdır.
 
-Kullanıcı çoklu PDF yükleyebilir, belgeler üzerinden kaynaklı cevaplar alabilir, sohbet hafızasını Thread ID ile kalıcı şekilde yönetebilir ve chat geçmişini dışa aktarabilir.
+Kullanıcı çoklu PDF yükleyebilir, OCR ve Vision destekli belge analizi yapabilir, kaynaklı RAG cevapları alabilir, JWT ile giriş yapabilir, kullanıcı bazlı private/public belge erişimi kullanabilir ve long-term memory ile kişisel bilgilerini kalıcı şekilde saklayabilir.
+
+Bu proje, local AI agent mimarisi, PDF tabanlı RAG, kullanıcı bazlı veri izolasyonu ve API tabanlı yapay zeka uygulaması geliştirme pratiği için tamamlanmış bir portfolyo projesidir.

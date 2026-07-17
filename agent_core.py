@@ -5,20 +5,111 @@ import os
 from langchain.agents import create_agent
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.sqlite import SqliteSaver
+from logger_config import logger
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
+def get_installed_ollama_models():
+    """
+    Ollama'da yüklü modelleri okur.
+    Hata olursa boş liste döner.
+    """
+    try:
+        import ollama
+
+        models_response = ollama.list()
+        models = models_response.get("models", [])
+
+        model_names = []
+
+        for model in models:
+            name = model.get("name") or model.get("model")
+            if name:
+                model_names.append(name)
+
+        return model_names
+
+    except Exception:
+        logger.warning("Ollama model listesi okunamadı.", exc_info=True)
+        return []
+
+def pick_available_text_model():
+    """
+    .env içindeki ana modeli ve fallback modelleri sırayla kontrol eder.
+    Ollama'da yüklü olan ilk modeli seçer.
+    """
+
+    primary_model = os.getenv("TEXT_MODEL", "qwen2.5:1.5b")
+
+    fallback_models = os.getenv(
+        "TEXT_MODEL_FALLBACKS",
+        "llama3.2:1b,gemma2:2b,mistral:latest"
+    )
+
+    candidate_models = [primary_model]
+
+    for model_name in fallback_models.split(","):
+        model_name = model_name.strip()
+        if model_name and model_name not in candidate_models:
+            candidate_models.append(model_name)
+
+    installed_models = get_installed_ollama_models()
+
+    if not installed_models:
+        logger.warning(
+            "Yüklü Ollama modelleri okunamadı. Ana model kullanılacak: %s",
+            primary_model
+        )
+        return primary_model
+
+    for model_name in candidate_models:
+        if model_name in installed_models:
+            logger.info("Seçilen text model: %s", model_name)
+            return model_name
+
+    logger.warning(
+        "Aday modellerin hiçbiri yüklü değil. Ana model deneniyor: %s",
+        primary_model
+    )
+
+    return primary_model
+
 @st.cache_resource
 def get_llm():
-    return ChatOllama(
-        model="gemma3:1b",
-        base_url=OLLAMA_BASE_URL,
-        num_gpu=0,
-        temperature=0,
-        num_ctx=2048,
-        num_predict=512,
-        keep_alive=0
-    )
+    try:
+        model_name = pick_available_text_model()
+
+        ollama_base_url = os.getenv(
+            "OLLAMA_BASE_URL",
+            "http://localhost:11434"
+        )
+
+        num_ctx = int(os.getenv("OLLAMA_NUM_CTX", "1536"))
+        num_predict = int(os.getenv("OLLAMA_NUM_PREDICT", "256"))
+        keep_alive = os.getenv("OLLAMA_KEEP_ALIVE", "5m")
+
+        llm = ChatOllama(
+            model=model_name,
+            temperature=0,
+            base_url=ollama_base_url,
+            num_ctx=num_ctx,
+            num_predict=num_predict,
+            keep_alive=keep_alive
+        )
+
+        logger.info(
+            "LLM yüklendi: %s, ctx=%s, predict=%s, keep_alive=%s",
+            model_name,
+            num_ctx,
+            num_predict,
+            keep_alive
+        )
+
+        return llm
+
+    except Exception:
+        logger.exception("LLM yüklenirken hata oluştu.")
+        return None
 
 
 @st.cache_resource
